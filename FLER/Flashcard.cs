@@ -163,35 +163,37 @@ namespace FLER
             {
                 return false;
             }
-            FileStream stream = File.OpenRead(filename);
-            if (!VerifyChecksum(stream))
+            using (FileStream stream = File.OpenRead(filename))
             {
-                return false;
-            }
-            using (MemoryStream copy = new MemoryStream())
-            {
-                stream.Position = 0;
-                stream.CopyTo(copy, (int)stream.Length - 12);
-                copy.Position = 0;
-                using (GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress))
+                if (!VerifyChecksum(stream))
                 {
-                    using (StreamReader sr = new StreamReader(deflate, Encoding.UTF8))
+                    return false;
+                }
+                using (MemoryStream copy = new MemoryStream())
+                {
+                    stream.Position = 0;
+                    stream.CopyTo(copy, (int)stream.Length - 12);
+                    copy.Position = 0;
+                    using (GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress))
                     {
-                        string json;
-                        try
+                        using (StreamReader sr = new StreamReader(deflate, Encoding.UTF8))
                         {
-                            json = sr.ReadToEnd();
-                            card = JsonConvert.DeserializeObject<Flashcard>(json);
+                            string json;
+                            try
+                            {
+                                json = sr.ReadToEnd();
+                                card = JsonConvert.DeserializeObject<Flashcard>(json);
+                            }
+                            catch (InvalidDataException e)
+                            {
+                                return false;
+                            }
+                            catch (JsonReaderException e)
+                            {
+                                return false;
+                            }
+                            return true;
                         }
-                        catch (InvalidDataException e)
-                        {
-                            return false;
-                        }
-                        catch (JsonReaderException e)
-                        {
-                            return false;
-                        }
-                        return true;
                     }
                 }
             }
