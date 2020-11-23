@@ -97,58 +97,79 @@ namespace FLER
 
         #endregion
 
-        #region IMPORT/EXPORT //mostly copied from C-4 as of now
+        #region Methods
 
+        #region Private Static
+
+        /// <summary>
+        /// Calculates the 96-checksum of a stream of bytes
+        /// </summary>
+        /// <param name="stream">The stream whose checksum should be calculated</param>
+        /// <param name="start">The starting position of the section to be considered</param>
+        /// <param name="end">The ending position of the section to be considered</param>
+        /// <returns>The 96-checksum of the given byte stream</returns>
         private static byte[] Checksum(Stream stream, long start = 0, long end = long.MaxValue)
         {
-            end = Math.Min(stream.Length, end);
-            byte[] bytes = new byte[12] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-            byte[] nbytes = new byte[12];
+            //clips the start and end to the stream size
+            start = Math.Max(start, 0);
+            end = Math.Max(start, Math.Min(end, stream.Length));
             stream.Position = start;
 
-            int n = stream.Read(nbytes, 0, Math.Min(12, (int)Math.Min(int.MaxValue, end - stream.Position)));
+            byte[] checksum = new byte[12] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }; //the output
+            byte[] bytes = new byte[12]; //bytes read from the stream
+
+            int n = stream.Read(bytes, 0, Math.Min(12, (int)Math.Min(int.MaxValue, end - stream.Position))); //the number of bytes read
+
+            //read up to 96 bits at a time until there are no more to read
             while (n > 0)
             {
+                //xor the checksum with the given byte data
                 for (int i = 0; i < n; i++)
                 {
-                    bytes[i] ^= nbytes[i];
+                    checksum[i] ^= bytes[i];
                 }
-                byte temp = (byte)((bytes[11] >> 7) & 1);
+
+                byte temp = (byte)((checksum[11] >> 7) & 1); //the last bit in the checksum
+
+                //left-shifts the checksum by one byte
                 for (int i = 11; i > 0; i--)
                 {
-                    bytes[i] <<= 1;
-                    bytes[i] |= (byte)((bytes[i - 1] >> 7) & 1);
+                    checksum[i] <<= 1; //left-shifts each int by one byte
+                    checksum[i] |= (byte)((checksum[i - 1] >> 7) & 1); //sets the lsb to the last bit of the previous int
                 }
-                bytes[0] <<= 1;
-                bytes[0] |= temp;
-                n = stream.Read(nbytes, 0, Math.Min(12, (int)Math.Min(int.MaxValue, end - stream.Position)));
+                checksum[0] <<= 1; //left-shifts the first int by one byte
+                checksum[0] |= temp; //sets the lsb to the old msb
+
+                //read more bytes
+                n = stream.Read(bytes, 0, Math.Min(12, (int)Math.Min(int.MaxValue, end - stream.Position)));
             }
 
-            return bytes;
+            return checksum; //return the calculated checksum
         }
 
+        /// <summary>
+        /// Checks whether a stream's byte data matches its 96-checksum
+        /// </summary>
+        /// <param name="stream">A stream with its 96-checksum appended</param>
+        /// <returns>True if the 96-checksum was successfully validated</returns>
         private static bool VerifyChecksum(Stream stream)
         {
             try
             {
-                stream.Position = stream.Length - 12;
-                byte[] c = Checksum(stream, 0, stream.Length - 12);
-                byte[] b = new byte[12];
-                stream.Read(b, 0, 12);
-                if (c.Length == b.Length && c.SequenceEqual(b))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                byte[] calculated = Checksum(stream, 0, stream.Length - 12);  //the 96-checksum calculated from the byte data
+                byte[] appended = new byte[12]; //the 96-checksum appended to the end of the stream
+                stream.Read(appended, 0, 12);
+                return appended.Length == calculated.Length && appended.SequenceEqual(calculated); //returns whether the two are equal
             }
-            catch (FormatException)
+            catch
             {
-                return false;
+                return false; //if any error occurred, the checksum is invalid
             }
         }
+
+        #endregion
+
+        #region Public Static
 
         /// <summary>
         /// Attempts to load a flashcard from the given path
@@ -158,46 +179,55 @@ namespace FLER
         /// <returns>Whether the operation was successful</returns>
         public static bool TryLoad(string filename, out Flashcard card)
         {
+            //sets the output in case of early exit
             card = null;
+            
             if (!File.Exists(filename))
             {
-                return false;
+                return false; //if the file doesn't exist, the load fails
             }
+
+            //otherwise, open the file
             using (FileStream stream = File.OpenRead(filename))
             {
                 if (!VerifyChecksum(stream))
                 {
-                    return false;
+                    return false; //if it doesn't have a valid checksum, the load fails
                 }
+
+                //otherwise, copy the data (excluding the checksum) to a memory stream
                 using (MemoryStream copy = new MemoryStream())
                 {
+                    //cuts off the last 96 bits
                     stream.Position = 0;
                     stream.CopyTo(copy, (int)stream.Length - 12);
                     copy.Position = 0;
+
+                    //open a gzip stream to decompress the data
                     using (GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress))
                     {
+                        //open a reader to get the json data
                         using (StreamReader sr = new StreamReader(deflate, Encoding.UTF8))
                         {
-                            string json;
                             try
                             {
-                                json = sr.ReadToEnd();
-                                card = JsonConvert.DeserializeObject<Flashcard>(json);
+                                //parse the json data and set the output
+                                card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
+                                return true; //if no errors, the load was successful
                             }
-                            catch (InvalidDataException e)
+                            catch (Exception)
                             {
-                                return false;
+                                return false; //if any errors occurred, the load fails
                             }
-                            catch (JsonReaderException e)
-                            {
-                                return false;
-                            }
-                            return true;
                         }
                     }
                 }
             }
         }
+
+        #endregion
+
+        #region Public Instance
 
         /// <summary>
         /// Saves this flashcard to the specified file path
@@ -208,13 +238,13 @@ namespace FLER
             string json = JsonConvert.SerializeObject(this); //serializes this card in json format
 
             //create a new file...
-            using(FileStream file = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 ///with gzip compression...
-                using(GZipStream deflate = new GZipStream(file, CompressionMode.Compress))
+                using (GZipStream deflate = new GZipStream(file, CompressionMode.Compress))
                 {
                     //and encoded text...
-                    using(StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8))
+                    using (StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8))
                     {
                         //write the json as a string
                         sw.Write(json);
@@ -230,5 +260,8 @@ namespace FLER
         }
 
         #endregion
+
+        #endregion
+
     }
 }
