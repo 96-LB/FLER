@@ -21,7 +21,7 @@ namespace FLER
         /// <summary>
         /// The flashcard directory location
         /// </summary>
-        private readonly string CARD_DIR = Path.Combine(Application.CommonAppDataPath, "CARD");
+        private readonly string CARD_DIR = Path.Combine(Application.UserAppDataPath, "CARD");
 
         #endregion
 
