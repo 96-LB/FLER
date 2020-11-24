@@ -21,7 +21,7 @@ namespace FLER
         /// <summary>
         /// Represents one face of a flashcard
         /// </summary>
-        public class Face
+        public struct Face
         {
 
             /// <summary>
