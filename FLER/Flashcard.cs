@@ -21,7 +21,7 @@ namespace FLER
         /// <summary>
         /// Represents one face of a flashcard
         /// </summary>
-        public struct Face
+        public class Face
         {
 
             /// <summary>
@@ -43,6 +43,11 @@ namespace FLER
             /// The content of the text box
             /// </summary>
             public string text;
+
+            /// <summary>
+            /// The format of the text box
+            /// </summary>
+            public StringFormat textFormat;
 
             /// <summary>
             /// The font used to render the text box
@@ -213,7 +218,13 @@ namespace FLER
                             {
                                 //parse the json data and set the output
                                 card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
-                                return true; //if no errors, the load was successful
+                                
+                                //if either face doesn't exist, the load fails
+                                if(card.visible == null || card.hidden == null)
+                                {
+                                    card = null;
+                                }
+                                return card != null; //returns whether the load was successful
                             }
                             catch (Exception)
                             {
