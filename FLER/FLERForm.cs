@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,6 +23,16 @@ namespace FLER
         /// The flashcard directory location
         /// </summary>
         private readonly string CARD_DIR = Path.Combine(Application.UserAppDataPath, "CARD");
+
+        /// <summary>
+        /// The default font to use when none is specified
+        /// </summary>
+        private readonly Font FONT_DEF = new Font("Arial", 18);
+
+        /// <summary>
+        /// A pseudorandom number generator
+        /// </summary>
+        private readonly Random RAND = new Random();
 
         #endregion
 
@@ -65,11 +76,12 @@ namespace FLER
             foreach (var i in Cards)
             {
                 MessageBox.Show(JsonConvert.SerializeObject(i));
+                RenderCard(i.Value.visible, i.Key + ".png");
             }
 
-            var f = new Flashcard() { tags = new string[] { "first" }, visible = new Flashcard.Face() { text = "first card" } };
+            var f = new Flashcard() { tags = new string[] { "first" }, hidden = new Flashcard.Face(), visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A", 96, FontStyle.Italic | FontStyle.Underline), textBox = new Rectangle(0, 0, 1000, 1000), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(200, 200, 400, 100), textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far } } };
             f.Save(Path.Combine(CARD_DIR, "first.fler"));
-            new Flashcard().Save(Path.Combine(CARD_DIR, "empty.fler"));
+            new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save(Path.Combine(CARD_DIR, "empty.fler"));
 
         }
         /// TEST CODE
@@ -88,7 +100,7 @@ namespace FLER
             {
                 string name = new AssemblyName(args.Name).Name + ".dll"; //the name of the assembly
                 string assembly = GetType().Assembly.GetManifestResourceNames().First(x => x.EndsWith(name)); //the loaded assemply
-                
+
                 //loads the assembly stream from the embedded resources
                 using (Stream stream = GetType().Assembly.GetManifestResourceStream(assembly))
                 {
@@ -151,9 +163,9 @@ namespace FLER
         private void NextCard()
         {
             ///note: not final implementation
-            ///TEST CODE: CHANGE TimeSpan.FromSeconds TO TimeSpan.FromDays ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //returns the first card in the list whose last-reviewed time is at least 2^level days ago
-            KeyValuePair<string, Flashcard> current = Cards.FirstOrDefault(x => DateTime.UtcNow - x.Value.date >= TimeSpan.FromSeconds(Math.Pow(2, x.Value.level)));
+            ///TEST CODE: CHANGE TimeSpan.FromSeconds TO TimeSpan.FromDays ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
+            //returns a random card in the list whose last-reviewed time is at least 2^level days ago
+            KeyValuePair<string, Flashcard> current = Cards.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Value.date >= TimeSpan.FromSeconds(Math.Pow(2, x.Value.level)));
 
             //sets the directory and card
             CurrentDir = current.Key;
@@ -177,14 +189,91 @@ namespace FLER
 
         #region Events
 
+
+
+        #endregion
+
         ///TEST CODE
+        #region TEST CODE
+
         private void button1_Click(object sender, EventArgs e)
         {
             DrawCard();
         }
-        ///TEST CODE
+
+        void RenderCard(Flashcard.Face face, string name)
+        {
+            ///note: not final implementation
+            ///note: c# 8.0 using syntax
+
+            const int RADIUS = 48;
+            const int DIAMETER = RADIUS * 2;
+            const int OUTLINE = 4;
+            const int OUT = OUTLINE / 2;
+
+            const int IMGWIDTH = 960;
+            const int IMGHEIGHT = 640;
+
+            const int LEFT = RADIUS + OUT;
+            const int RIGHT = IMGWIDTH - RADIUS - OUT;
+            const int TOP = RADIUS + OUT;
+            const int BOTTOM = IMGHEIGHT - RADIUS - OUT;
+
+            const int ARCRIGHT = RIGHT - RADIUS;
+            const int ARCBOTTOM = BOTTOM - RADIUS;
+
+            using (Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT))
+            {
+                using (Graphics graphics = Graphics.FromImage(bmp))
+                {
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    GraphicsPath path = new GraphicsPath();
+                    path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
+                    path.AddArc(ARCRIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
+                    path.AddArc(ARCRIGHT, ARCBOTTOM, DIAMETER, DIAMETER, 0, 90);
+                    path.AddArc(OUT, ARCBOTTOM, DIAMETER, DIAMETER, 90, 90);
+                    path.CloseFigure();
+                    using (Brush p = new SolidBrush(face.backColor))
+                    {
+                        graphics.FillPath(p, path);
+                    }
+                    using (Pen p = new Pen(face.foreColor, OUTLINE))
+                    {
+                        graphics.DrawPath(p, path);
+                    }
+
+                    using (Region clip = new Region(path))
+                    {  
+                        graphics.TranslateTransform(LEFT, TOP);
+                        graphics.Clip = clip;
+
+                        using (Brush p = new SolidBrush(face.foreColor))
+                        {
+                            graphics.IntersectClip(face.textBox);
+                            graphics.DrawString(face.text, face.font ?? FONT_DEF, p, face.textBox, face.textFormat);
+                        }
+
+                        if (face.imagePath != null)
+                        {
+                            try
+                            {
+                                graphics.Clip = clip;
+                                graphics.IntersectClip(face.imageBox);
+                                using (Image img = Image.FromFile(face.imagePath))
+                                {
+                                    graphics.DrawImage(img, face.imageBox);
+                                }
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                }
+                bmp.Save(name);
+            }
+        }
 
         #endregion
+        ///TEST CODE
 
     }
 }
