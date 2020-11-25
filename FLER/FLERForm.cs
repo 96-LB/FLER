@@ -72,14 +72,14 @@ namespace FLER
         void TESTCODE()
         {
 
-            MessageBox.Show(JsonConvert.SerializeObject(Cards.Keys));
+            //MessageBox.Show(JsonConvert.SerializeObject(Cards.Keys));
             foreach (var i in Cards)
             {
-                MessageBox.Show(JsonConvert.SerializeObject(i));
+                //MessageBox.Show(JsonConvert.SerializeObject(i));
                 RenderCard(i.Value.visible, i.Key + ".png");
             }
 
-            var f = new Flashcard() { tags = new string[] { "first" }, hidden = new Flashcard.Face(), visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A", 96, FontStyle.Italic | FontStyle.Underline), textBox = new Rectangle(0, 0, 1000, 1000), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(200, 200, 400, 100), textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far } } };
+            var f = new Flashcard() { tags = new string[] { "first" }, hidden = new Flashcard.Face(), visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A", 192, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(500, 400, 1000, 1000), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(-500, -500, 1500, 1500) } };
             f.Save(Path.Combine(CARD_DIR, "first.fler"));
             new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save(Path.Combine(CARD_DIR, "empty.fler"));
 
@@ -189,7 +189,7 @@ namespace FLER
 
         #region Events
 
-
+        //no final events :(
 
         #endregion
 
@@ -204,8 +204,6 @@ namespace FLER
         void RenderCard(Flashcard.Face face, string name)
         {
             ///note: not final implementation
-            ///note: c# 8.0 using syntax
-
             const int RADIUS = 48;
             const int DIAMETER = RADIUS * 2;
             const int OUTLINE = 4;
@@ -214,66 +212,72 @@ namespace FLER
             const int IMGWIDTH = 960;
             const int IMGHEIGHT = 640;
 
-            const int LEFT = RADIUS + OUT;
             const int RIGHT = IMGWIDTH - RADIUS - OUT;
-            const int TOP = RADIUS + OUT;
             const int BOTTOM = IMGHEIGHT - RADIUS - OUT;
 
             const int ARCRIGHT = RIGHT - RADIUS;
             const int ARCBOTTOM = BOTTOM - RADIUS;
 
-            using (Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT))
+            using Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
+            using Graphics graphics = Graphics.FromImage(bmp);
+            using GraphicsPath path = new GraphicsPath();
+            using Brush backColor = new SolidBrush(face.backColor);
+            using Brush foreColor = new SolidBrush(face.foreColor);
+            using Pen forePen = new Pen(face.foreColor, OUTLINE);
+
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
+            path.AddArc(ARCRIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
+            path.AddArc(ARCRIGHT, ARCBOTTOM, DIAMETER, DIAMETER, 0, 90);
+            path.AddArc(OUT, ARCBOTTOM, DIAMETER, DIAMETER, 90, 90);
+            path.CloseFigure();
+
+
+            graphics.FillPath(backColor, path);
+
+            void renderText()
             {
-                using (Graphics graphics = Graphics.FromImage(bmp))
+                if (face.imageTop)
                 {
-                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    GraphicsPath path = new GraphicsPath();
-                    path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
-                    path.AddArc(ARCRIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
-                    path.AddArc(ARCRIGHT, ARCBOTTOM, DIAMETER, DIAMETER, 0, 90);
-                    path.AddArc(OUT, ARCBOTTOM, DIAMETER, DIAMETER, 90, 90);
-                    path.CloseFigure();
-                    using (Brush p = new SolidBrush(face.backColor))
-                    {
-                        graphics.FillPath(p, path);
-                    }
-                    using (Pen p = new Pen(face.foreColor, OUTLINE))
-                    {
-                        graphics.DrawPath(p, path);
-                    }
-
-                    using (Region clip = new Region(path))
-                    {  
-                        graphics.TranslateTransform(LEFT, TOP);
-                        graphics.Clip = clip;
-
-                        using (Brush p = new SolidBrush(face.foreColor))
-                        {
-                            graphics.IntersectClip(face.textBox);
-                            graphics.DrawString(face.text, face.font ?? FONT_DEF, p, face.textBox, face.textFormat);
-                        }
-
-                        if (face.imagePath != null)
-                        {
-                            try
-                            {
-                                graphics.Clip = clip;
-                                graphics.IntersectClip(face.imageBox);
-                                using (Image img = Image.FromFile(face.imagePath))
-                                {
-                                    graphics.DrawImage(img, face.imageBox);
-                                }
-                            }
-                            catch (Exception) { }
-                        }
-                    }
+                    graphics.SetClip(path);
+                    graphics.IntersectClip(face.textBox);
+                    graphics.DrawString(face.text, face.font ?? FONT_DEF, foreColor, face.textBox, face.textFormat);
                 }
-                bmp.Save(name);
             }
+
+            void renderImage()
+            {
+                if (face.imagePath != null)
+                {
+                    try
+                    {
+                        graphics.SetClip(path);
+                        graphics.IntersectClip(face.imageBox);
+                        using Image img = Image.FromFile(face.imagePath);
+                        graphics.DrawImage(img, face.imageBox);
+                    }
+                    catch (Exception) { }
+                }
+            }
+
+            if (face.imageTop)
+            {
+                renderText();
+                renderImage();
+            }
+            else
+            {
+                renderImage();
+                renderText();
+            }
+
+            graphics.ResetClip();
+            graphics.DrawPath(forePen, path);
+
+            bmp.Save(name);
         }
 
         #endregion
         ///TEST CODE
-
     }
 }

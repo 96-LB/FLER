@@ -69,6 +69,10 @@ namespace FLER
             /// </summary>
             public string imagePath;
 
+            /// <summary>
+            /// Whether the image box should render overtop of the text box
+            /// </summary>
+            public bool imageTop;
         }
 
         #endregion
