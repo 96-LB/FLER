@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -51,6 +53,12 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "label1";
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 20;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // FLERForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -60,6 +68,7 @@
             this.Controls.Add(this.button1);
             this.Name = "FLERForm";
             this.Text = "Form1";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FLERForm_Paint);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -69,6 +78,7 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
