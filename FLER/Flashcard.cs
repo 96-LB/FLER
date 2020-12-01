@@ -190,7 +190,10 @@ namespace FLER
         {
             //sets the output in case of early exit
             card = null;
-            
+
+            //navigates to the card directory
+            filename = Path.Combine(FLERForm.CARD_DIR, filename);
+
             if (!File.Exists(filename))
             {
                 return false; //if the file doesn't exist, the load fails
@@ -222,12 +225,26 @@ namespace FLER
                             {
                                 //parse the json data and set the output
                                 card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
-                                
+
                                 //if either face doesn't exist, the load fails
-                                if(card.visible == null || card.hidden == null)
+                                if (card.visible == null || card.hidden == null)
                                 {
                                     card = null;
                                 }
+                                else
+                                {
+                                    //if the sprite array isn't properly set, give it an empty array
+                                    if (card.visible.sprites == null || card.visible.sprites.Length != 180)
+                                    {
+                                        card.visible.sprites = new string[180];
+                                    }
+                                    //do the same for both sides of the card
+                                    if (card.hidden.sprites == null || card.hidden.sprites.Length != 180)
+                                    {
+                                        card.hidden.sprites = new string[180];
+                                    }
+                                }
+
                                 return card != null; //returns whether the load was successful
                             }
                             catch (Exception)
@@ -252,6 +269,9 @@ namespace FLER
         {
             string json = JsonConvert.SerializeObject(this); //serializes this card in json format
 
+            //navigates to the card directory
+            filename = Path.Combine(FLERForm.CARD_DIR, filename);
+
             //create a new file...
             using (FileStream file = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
             {
@@ -267,7 +287,7 @@ namespace FLER
                 }
             }
             //reopen the file to update its length property
-            using (FileStream file = File.Open(Path.Combine(FLERForm.CARD_DIR, filename), FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream file = File.Open(filename, FileMode.Open, FileAccess.ReadWrite))
             {
                 //append the checksum
                 file.Write(Checksum(file), 0, 12);

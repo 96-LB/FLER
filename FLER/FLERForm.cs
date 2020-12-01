@@ -78,17 +78,23 @@ namespace FLER
         void TESTCODE()
         {
 
-            //MessageBox.Show(JsonConvert.SerializeObject(Cards.Keys));
-            foreach (var i in Cards)
+            var f = new Flashcard()
             {
-                //MessageBox.Show(JsonConvert.SerializeObject(i));
-                RenderCard(i.Value.visible, i.Key + ".png");
-            }
-
-            var f = new Flashcard() { tags = new string[] { "first" }, hidden = new Flashcard.Face(), visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A", 96, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 1000, 1000), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(-500, -500, 1500, 1500) } };
-            f.Save(Path.Combine(CARD_DIR, "first.fler"));
-            new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save(Path.Combine(CARD_DIR, "empty.fler"));
-
+                tags = new string[] { "first" },
+                hidden = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 500, 500), imagePath = @"C:\Users\Admin\Downloads\96LB_BRR.png", imageBox = new Rectangle(-250, -250, 750, 750) },
+                visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 500, 500), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(-250, -250, 750, 750) }
+            };
+            //f.Save("first.fler");
+            new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save("empty.fler");
+            f = new Flashcard()
+            {
+                tags = new string[] { "first" },
+                hidden = new Flashcard.Face() { text = "first card", backColor = Color.DarkMagenta, foreColor = Color.Magenta, font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 480, 320), imageBox = new Rectangle(-250, -250, 750, 750), textFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
+                visible = new Flashcard.Face() { text = "you did it!", backColor = Color.DarkMagenta, foreColor = Color.Magenta, font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 480, 320), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", textFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
+            };
+            //f.Save("ff.fler");
+            Flashcard.TryLoad("ff.fler", out f);
+            LoadCard(f, "ff.fler");
         }
         /// TEST CODE
 
@@ -205,21 +211,21 @@ namespace FLER
             DrawCard();
         }
 
-        void RenderCard(Flashcard.Face face, string name)
+        Bitmap RenderFace(Flashcard.Face face)
         {
             ///note: not final implementation
-            const int RADIUS = 48;
+            const int RADIUS = 24;
             const int DIAMETER = RADIUS * 2;
-            const int OUTLINE = 4;
+            const int OUTLINE = 2;
             const int OUT = OUTLINE / 2;
 
-            const int IMGWIDTH = 960;
-            const int IMGHEIGHT = 640;
+            const int IMGWIDTH = 480;
+            const int IMGHEIGHT = 320;
 
             const int RIGHT = IMGWIDTH - DIAMETER - OUT;
             const int BOTTOM = IMGHEIGHT - DIAMETER - OUT;
 
-            using Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
+            Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
             using Graphics graphics = Graphics.FromImage(bmp);
             using GraphicsPath path = new GraphicsPath();
             using Brush backColor = new SolidBrush(face.backColor);
@@ -254,7 +260,7 @@ namespace FLER
                         using Image img = Image.FromFile(face.imagePath);
                         graphics.DrawImage(img, face.imageBox);
                     }
-                    catch (Exception)
+                    catch
                     {
                         graphics.DrawImage(Properties.Resources.Missing, face.imageBox);
                     }
@@ -275,14 +281,14 @@ namespace FLER
             graphics.ResetClip();
             graphics.DrawPath(forePen, path);
 
-            bmp.Save(Path.Combine(IMG_DIR, name));
+            return bmp;
         }
 
 
-        void RotateImage(Bitmap img, int degrees)
+        Bitmap RotateFace(Image img, int degrees)
         {
             ///note: not final implementation
-            const double FACTOR = 1.1;
+            const double FACTOR = 0.25;
 
             static Graphics qualityGraphics(Bitmap bmp)
             {
@@ -303,41 +309,116 @@ namespace FLER
 
             double rad = degrees * Math.PI / 180.0;
             double sin = FACTOR * Math.Sin(rad);
-            double cos = FACTOR * Math.Sin(rad);
+            double cos = Math.Cos(rad);
 
             for (int i = 0; i < img.Height; i++)
             {
                 int width = round(2 * sin * ((double)i / img.Height - 0.5) * img.Height + img.Width);
-                graphics.DrawImage(img, 
-                    new Rectangle((bmp.Width - width) / 2, i, width, 1), 
-                    0, i, img.Width, 1, 
+                graphics.DrawImage(img,
+                    new Rectangle((bmp.Width - width) / 2, i, width, 1),
+                    0, i, img.Width, 1,
                     GraphicsUnit.Pixel, attributes);
             }
-            using Bitmap bmp2 = new Bitmap(bmp.Width, bmp.Height);
-            using Graphics graphics2 = qualityGraphics(bmp2);
+            Bitmap output = new Bitmap(bmp.Width, bmp.Height);
+            using Graphics outgraphics = qualityGraphics(output);
 
-            graphics2.DrawImage(bmp, 
-                new Rectangle(0, round(0.5 * (1 - cos) * bmp2.Height), bmp2.Width, round(cos * bmp2.Height)),
-                0, 0, bmp.Width, bmp.Height, 
+            outgraphics.DrawImage(bmp,
+                new Rectangle(0, round(0.5 * (1 - cos) * output.Height), output.Width, round(cos * output.Height)),
+                0, 0, bmp.Width, bmp.Height,
                 GraphicsUnit.Pixel, attributes);
 
-            bmp2.Save(Path.Combine(IMG_DIR, $"test{degrees}.png"));
+            return output;
         }
 
-        Dictionary<int, Image> d = new Dictionary<int, Image>();
+        void LoadCard(Flashcard card, string filename)
+        {
+            const int INTERVAL = 3;
+
+            foreach (Image img in visible)
+            {
+                img.Dispose();
+            }
+            foreach (Image img in hidden)
+            {
+                img.Dispose();
+            }
+            visible.Clear();
+            hidden.Clear();
+
+            string vguid = Guid.NewGuid().ToString();
+            string hguid = Guid.NewGuid().ToString();
+
+            visible.Add(null);
+            hidden.Add(null);
+
+            for (int i = 0; i < 180; i += INTERVAL)
+            {
+                flipped = i > 90;
+                try
+                {
+                    Sprites.Add(Image.FromFile(card.visible.sprites[i]));
+                }
+                catch
+                {
+                    Image img = RotateFace(visible[0] ?? (visible[0] = RenderFace(card.visible)), flipped ? i - 180 : i);
+                    string path = Path.Combine(IMG_DIR, vguid, i + ".png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    img.Save(path);
+                    card.visible.sprites[i] = path;
+                    Sprites.Add(img);
+                }
+
+                flipped = !flipped;
+                try
+                {
+                    Sprites.Add(Image.FromFile(card.hidden.sprites[i]));
+                }
+                catch
+                {
+                    Image img = RotateFace(hidden[0] ?? (hidden[0] = RenderFace(card.hidden)), flipped ? i : i - 180);
+                    string path = Path.Combine(IMG_DIR, hguid, i + ".png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    img.Save(path);
+                    card.hidden.sprites[i] = path;
+                    Sprites.Add(img);
+                }
+            }
+
+            if (visible[0] != null || hidden[0] != null)
+            {
+                card.Save(filename);
+            }
+
+            visible.RemoveAt(0);
+            hidden.RemoveAt(0);
+        }
+
+        bool flipped;
+        List<Image> Sprites { get => flipped ? hidden : visible; }
+        readonly List<Image> visible = new List<Image>();
+        readonly List<Image> hidden = new List<Image>();
+
         int counter = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            counter += 6;
-            counter %= 360;
+            if (++counter >= Sprites.Count)
+            {
+                counter = 0;
+                flipped = !flipped;
+                timer1.Stop();
+            }
             Invalidate();
         }
 
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
-            if (!d.ContainsKey(counter)) d[counter] = Image.FromFile(Path.Combine(CARD_DIR, $"test/test{counter}.png"));
-            e.Graphics.DrawImage(d[counter], 100, 100, 640, 320);
+            e.Graphics.DrawImage(Sprites[counter], 100, 100, 640, 320);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            timer1.Start();
         }
 
 
