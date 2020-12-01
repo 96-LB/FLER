@@ -267,7 +267,7 @@ namespace FLER
                 }
             }
             //reopen the file to update its length property
-            using (FileStream file = File.Open(filename, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream file = File.Open(Path.Combine(FLERForm.CARD_DIR, filename), FileMode.Open, FileAccess.ReadWrite))
             {
                 //append the checksum
                 file.Write(Checksum(file), 0, 12);

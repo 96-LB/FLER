@@ -91,5 +91,8 @@
   <ItemGroup>
     <EmbeddedResource Include="lib\Newtonsoft.Json.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\missing.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

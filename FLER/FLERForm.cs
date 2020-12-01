@@ -23,12 +23,17 @@ namespace FLER
         /// <summary>
         /// The flashcard directory location
         /// </summary>
-        private readonly string CARD_DIR = Path.Combine(Application.UserAppDataPath, "CARD");
+        public static readonly string CARD_DIR = Path.Combine(Application.UserAppDataPath, "CARD");
+
+        /// <summary>
+        /// The image directory location
+        /// </summary>
+        public static readonly string IMG_DIR = Path.Combine(CARD_DIR, "IMG");
 
         /// <summary>
         /// The default font to use when none is specified
         /// </summary>
-        private readonly Font FONT_DEF = new Font("Arial", 18);
+        public static readonly Font FONT_DEF = new Font("Arial", 18);
 
         /// <summary>
         /// A pseudorandom number generator
@@ -101,14 +106,12 @@ namespace FLER
             {
                 string name = new AssemblyName(args.Name).Name + ".dll"; //the name of the assembly
                 string assembly = GetType().Assembly.GetManifestResourceNames().First(x => x.EndsWith(name)); //the loaded assemply
+                using Stream stream = GetType().Assembly.GetManifestResourceStream(assembly); //the assembly stream from the embedded resources
 
-                //loads the assembly stream from the embedded resources
-                using (Stream stream = GetType().Assembly.GetManifestResourceStream(assembly))
-                {
-                    byte[] data = new byte[stream.Length]; //the byte data of the assembly
-                    stream.Read(data, 0, data.Length);
-                    return Assembly.Load(data); //loads the assembly from the raw bytes
-                }
+                byte[] data = new byte[stream.Length]; //the byte data of the assembly
+                stream.Read(data, 0, data.Length);
+
+                return Assembly.Load(data); //loads the assembly from the raw bytes
             };
         }
 
@@ -213,11 +216,8 @@ namespace FLER
             const int IMGWIDTH = 960;
             const int IMGHEIGHT = 640;
 
-            const int RIGHT = IMGWIDTH - RADIUS - OUT;
-            const int BOTTOM = IMGHEIGHT - RADIUS - OUT;
-
-            const int ARCRIGHT = RIGHT - RADIUS;
-            const int ARCBOTTOM = BOTTOM - RADIUS;
+            const int RIGHT = IMGWIDTH - DIAMETER - OUT;
+            const int BOTTOM = IMGHEIGHT - DIAMETER - OUT;
 
             using Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
             using Graphics graphics = Graphics.FromImage(bmp);
@@ -228,9 +228,9 @@ namespace FLER
 
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
-            path.AddArc(ARCRIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
-            path.AddArc(ARCRIGHT, ARCBOTTOM, DIAMETER, DIAMETER, 0, 90);
-            path.AddArc(OUT, ARCBOTTOM, DIAMETER, DIAMETER, 90, 90);
+            path.AddArc(RIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
+            path.AddArc(RIGHT, BOTTOM, DIAMETER, DIAMETER, 0, 90);
+            path.AddArc(OUT, BOTTOM, DIAMETER, DIAMETER, 90, 90);
             path.CloseFigure();
 
 
@@ -247,14 +247,17 @@ namespace FLER
             {
                 if (face.imagePath != null)
                 {
+                    graphics.SetClip(path);
+                    graphics.IntersectClip(face.imageBox);
                     try
                     {
-                        graphics.SetClip(path);
-                        graphics.IntersectClip(face.imageBox);
                         using Image img = Image.FromFile(face.imagePath);
                         graphics.DrawImage(img, face.imageBox);
                     }
-                    catch (Exception) { }
+                    catch (Exception)
+                    {
+                        graphics.DrawImage(Properties.Resources.Missing, face.imageBox);
+                    }
                 }
             }
 
@@ -272,36 +275,53 @@ namespace FLER
             graphics.ResetClip();
             graphics.DrawPath(forePen, path);
 
-            bmp.Save(name);if (name.Contains("empty")) return;
-            //for(int i = 0; i < 360; i += 6)
-            //RotateImage(bmp, i, 3f);
+            bmp.Save(Path.Combine(IMG_DIR, name));
         }
 
 
-        void RotateImage(Bitmap img, int degrees, float factor)
+        void RotateImage(Bitmap img, int degrees)
         {
-            using Bitmap bmp = new Bitmap(img.Width + (int)Math.Round(img.Height * factor), img.Height);
-            using Graphics graphics = Graphics.FromImage(bmp);
+            ///note: not final implementation
+            const double FACTOR = 1.1;
+
+            static Graphics qualityGraphics(Bitmap bmp)
+            {
+                Graphics graphics = Graphics.FromImage(bmp);
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                return graphics;
+            }
+
+            static int round(double num) => (int)Math.Round(num);
+
+            using Bitmap bmp = new Bitmap(img.Width + round(img.Height * FACTOR), img.Height);
+            using Graphics graphics = qualityGraphics(bmp);
             using ImageAttributes attributes = new ImageAttributes();
             attributes.SetWrapMode(WrapMode.TileFlipXY);
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-            double x = factor * Math.Sin(degrees * Math.PI / 180);
+
+            double rad = degrees * Math.PI / 180.0;
+            double sin = FACTOR * Math.Sin(rad);
+            double cos = FACTOR * Math.Sin(rad);
+
             for (int i = 0; i < img.Height; i++)
             {
-                int width = (int)Math.Round(2 * x * ((double)i / img.Height - 0.5) * img.Height + img.Width);
-                graphics.DrawImage(img, new Rectangle((bmp.Width - width) / 2, i, width, 1), 0, i, img.Width, 1, GraphicsUnit.Pixel, attributes);
+                int width = round(2 * sin * ((double)i / img.Height - 0.5) * img.Height + img.Width);
+                graphics.DrawImage(img, 
+                    new Rectangle((bmp.Width - width) / 2, i, width, 1), 
+                    0, i, img.Width, 1, 
+                    GraphicsUnit.Pixel, attributes);
             }
             using Bitmap bmp2 = new Bitmap(bmp.Width, bmp.Height);
-            using Graphics graphics2 = Graphics.FromImage(bmp2);
-            graphics2.SmoothingMode = SmoothingMode.HighQuality;
-            graphics2.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics2.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            graphics2.CompositingQuality = CompositingQuality.HighQuality;
-            graphics2.DrawImage(bmp, new Rectangle(0, (int)Math.Round(0.5 * (1 - Math.Cos(degrees * Math.PI / 180)) * bmp2.Height), bmp2.Width, (int)Math.Round(Math.Cos(degrees * Math.PI / 180) * bmp2.Height)), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-            bmp2.Save(Path.Combine(CARD_DIR, $"test{degrees}.png"));
+            using Graphics graphics2 = qualityGraphics(bmp2);
+
+            graphics2.DrawImage(bmp, 
+                new Rectangle(0, round(0.5 * (1 - cos) * bmp2.Height), bmp2.Width, round(cos * bmp2.Height)),
+                0, 0, bmp.Width, bmp.Height, 
+                GraphicsUnit.Pixel, attributes);
+
+            bmp2.Save(Path.Combine(IMG_DIR, $"test{degrees}.png"));
         }
 
         Dictionary<int, Image> d = new Dictionary<int, Image>();
@@ -316,8 +336,8 @@ namespace FLER
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
-            if(!d.ContainsKey(counter)) d[counter] = Image.FromFile(Path.Combine(CARD_DIR, $"test/test{counter}.png"));
-            e.Graphics.DrawImage(d[counter], 100, 100, 640, 160);
+            if (!d.ContainsKey(counter)) d[counter] = Image.FromFile(Path.Combine(CARD_DIR, $"test/test{counter}.png"));
+            e.Graphics.DrawImage(d[counter], 100, 100, 640, 320);
         }
 
 
