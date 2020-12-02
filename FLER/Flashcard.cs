@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FLER
 {
@@ -199,61 +197,52 @@ namespace FLER
                 return false; //if the file doesn't exist, the load fails
             }
 
-            //otherwise, open the file
-            using (FileStream stream = File.OpenRead(filename))
+            using FileStream stream = File.OpenRead(filename); //the file to be read
+
+            if (!VerifyChecksum(stream))
             {
-                if (!VerifyChecksum(stream))
+                return false; //if it doesn't have a valid checksum, the load fails
+            }
+
+            using MemoryStream copy = new MemoryStream(); //a copy of the data without the 96-checksum
+            
+            //cuts off the last 96 bits
+            stream.Position = 0;
+            stream.CopyTo(copy, (int)stream.Length - 12);
+            copy.Position = 0;
+
+            using GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress); //a gzip decompression stream
+            using StreamReader sr = new StreamReader(deflate, Encoding.UTF8); //a string reader to get the json data
+            
+            try
+            {
+                //parse the json data and set the output
+                card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
+
+                //if either face doesn't exist, the load fails
+                if (card.visible == null || card.hidden == null)
                 {
-                    return false; //if it doesn't have a valid checksum, the load fails
+                    card = null;
                 }
-
-                //otherwise, copy the data (excluding the checksum) to a memory stream
-                using (MemoryStream copy = new MemoryStream())
+                else
                 {
-                    //cuts off the last 96 bits
-                    stream.Position = 0;
-                    stream.CopyTo(copy, (int)stream.Length - 12);
-                    copy.Position = 0;
-
-                    //open a gzip stream to decompress the data
-                    using (GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress))
+                    //if the sprite array isn't properly set, give it an empty array
+                    if (card.visible.sprites == null || card.visible.sprites.Length != 180)
                     {
-                        //open a reader to get the json data
-                        using (StreamReader sr = new StreamReader(deflate, Encoding.UTF8))
-                        {
-                            try
-                            {
-                                //parse the json data and set the output
-                                card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
-
-                                //if either face doesn't exist, the load fails
-                                if (card.visible == null || card.hidden == null)
-                                {
-                                    card = null;
-                                }
-                                else
-                                {
-                                    //if the sprite array isn't properly set, give it an empty array
-                                    if (card.visible.sprites == null || card.visible.sprites.Length != 180)
-                                    {
-                                        card.visible.sprites = new string[180];
-                                    }
-                                    //do the same for both sides of the card
-                                    if (card.hidden.sprites == null || card.hidden.sprites.Length != 180)
-                                    {
-                                        card.hidden.sprites = new string[180];
-                                    }
-                                }
-
-                                return card != null; //returns whether the load was successful
-                            }
-                            catch (Exception)
-                            {
-                                return false; //if any errors occurred, the load fails
-                            }
-                        }
+                        card.visible.sprites = new string[180];
+                    }
+                    //do the same for both sides of the card
+                    if (card.hidden.sprites == null || card.hidden.sprites.Length != 180)
+                    {
+                        card.hidden.sprites = new string[180];
                     }
                 }
+
+                return card != null; //returns whether the load was successful
+            }
+            catch (Exception)
+            {
+                return false; //if any errors occurred, the load fails
             }
         }
 
@@ -275,17 +264,13 @@ namespace FLER
             //create a new file...
             using (FileStream file = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                ///with gzip compression...
-                using (GZipStream deflate = new GZipStream(file, CompressionMode.Compress))
-                {
-                    //and encoded text...
-                    using (StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8))
-                    {
-                        //write the json as a string
-                        sw.Write(json);
-                    }
-                }
+                using GZipStream deflate = new GZipStream(file, CompressionMode.Compress); //a gzip compression stream
+                using StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8); //a text reader
+                
+                //write the json as a string
+                sw.Write(json);
             }
+
             //reopen the file to update its length property
             using (FileStream file = File.Open(filename, FileMode.Open, FileAccess.ReadWrite))
             {
