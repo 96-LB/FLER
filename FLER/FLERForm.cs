@@ -85,7 +85,7 @@ namespace FLER
                 visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 500, 500), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(-250, -250, 750, 750) }
             };
             //f.Save("first.fler");
-            new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save("empty.fler");
+            //new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save("empty.fler");
             f = new Flashcard()
             {
                 tags = new string[] { "first" },
@@ -95,6 +95,7 @@ namespace FLER
             //f.Save("ff.fler");
             Flashcard.TryLoad("ff.fler", out f);
             LoadCard(f, "ff.fler");
+            controls.Add(fc);
         }
         /// TEST CODE
 
@@ -168,7 +169,7 @@ namespace FLER
             if (CurrentCard != null)
             {
                 checkBox1.Text = "" + CurrentCard.level;
-                Refresh();
+                Invalidate(fc.Bounds);
             }
             else
             {
@@ -345,84 +346,79 @@ namespace FLER
             return output;
         }
 
+        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 560, 320) };
+
         void LoadCard(Flashcard card, string filename)
         {
             const int INTERVAL = 3;
 
-            foreach (Image img in visible)
+            foreach (Image img in fc.visible)
             {
                 img.Dispose();
             }
-            foreach (Image img in hidden)
+            foreach (Image img in fc.hidden)
             {
                 img.Dispose();
             }
-            visible.Clear();
-            hidden.Clear();
+            fc.visible.Clear();
+            fc.hidden.Clear();
 
             string vguid = Guid.NewGuid().ToString();
             string hguid = Guid.NewGuid().ToString();
 
-            visible.Add(null);
-            hidden.Add(null);
+            fc.visible.Add(null);
+            fc.hidden.Add(null);
 
             for (int i = 0; i < 180; i += INTERVAL)
             {
-                flipped = i > 90;
+                fc.flipped = i > 90;
                 try
                 {
-                    Sprites.Add(Image.FromFile(card.visible.sprites[i]));
+                    fc.Sprites.Add(Image.FromFile(card.visible.sprites[i]));
                 }
                 catch
                 {
-                    Image img = RotateFace(visible[0] ??= RenderFace(card.visible), flipped ? i - 180 : i);
+                    Image img = RotateFace(fc.visible[0] ??= RenderFace(card.visible), fc.flipped ? i - 180 : i);
                     string path = Path.Combine(IMG_DIR, vguid, i + ".png");
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
                     card.visible.sprites[i] = path;
-                    Sprites.Add(img);
+                    fc.Sprites.Add(img);
                 }
 
-                flipped = !flipped;
+                fc.flipped = !fc.flipped;
                 try
                 {
-                    Sprites.Add(Image.FromFile(card.hidden.sprites[i]));
+                    fc.Sprites.Add(Image.FromFile(card.hidden.sprites[i]));
                 }
                 catch
                 {
-                    Image img = RotateFace(hidden[0] ??= RenderFace(card.hidden), flipped ? i : i - 180);
+                    Image img = RotateFace(fc.hidden[0] ??= RenderFace(card.hidden), fc.flipped ? i : i - 180);
                     string path = Path.Combine(IMG_DIR, hguid, i + ".png");
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
                     card.hidden.sprites[i] = path;
-                    Sprites.Add(img);
+                    fc.Sprites.Add(img);
                 }
             }
 
-            if (visible[0] != null || hidden[0] != null)
+            if (fc.visible[0] != null || fc.hidden[0] != null)
             {
                 card.Save(filename);
             }
 
-            visible.RemoveAt(0);
-            hidden.RemoveAt(0);
+            fc.visible.RemoveAt(0);
+            fc.hidden.RemoveAt(0);
         }
 
-        bool flipped;
-        List<Image> Sprites { get => flipped ? hidden : visible; }
-        readonly List<Image> visible = new List<Image>();
-        readonly List<Image> hidden = new List<Image>();
 
-        int counter = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (++counter >= Sprites.Count)
+            label2.Text = "" + (1 + int.Parse(label2.Text));
+            if (fc.Flip())
             {
-                counter = 0;
-                flipped = !flipped;
-                timer1.Stop();
+                Invalidate(fc.Bounds);
             }
-            Invalidate();
         }
 
         List<FLERControl> controls = new List<FLERControl>();
@@ -431,7 +427,6 @@ namespace FLER
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
-            e.Graphics.DrawImage(Sprites[counter], 100, 100, 640, 320);
 
             foreach (FLERControl f in controls)
             {
@@ -470,28 +465,32 @@ namespace FLER
             {
                 Invalidate(hover.Bounds);
             }
-            Point pointer = PointToClient(Cursor.Position);
+
             FLERControl next = null;
-            if (selected == null)
+            Point pointer = PointToClient(Cursor.Position);
+            if (new Rectangle(Point.Empty, ClientRectangle.Size).Contains(pointer))
             {
-                foreach (FLERControl control in controls)
+                if (selected == null)
                 {
-                    if (control.Bounds.Contains(pointer))
+                    foreach (FLERControl control in controls)
                     {
-                        next = control;
-                        break;
+                        if (control.Bounds.Contains(pointer))
+                        {
+                            next = control;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (selected.Bounds.Contains(pointer))
+                    {
+                        next = selected;
                     }
                 }
             }
-            else
-            {
-                if (selected.Bounds.Contains(pointer))
-                {
-                    hover = selected;
-                }
-            }
-            
-            if(next != hover)
+
+            if (next != hover)
             {
                 if (hover?.MouseLeave(e) == true)
                 {
@@ -504,12 +503,25 @@ namespace FLER
             }
 
             hover = next;
-            Cursor.Current = hover?.Cursor ?? Cursor;
+            Cursor = hover?.Cursor ?? Cursors.Default;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Start();
+        }
+
+        private void FLERForm_MouseLeave(object sender, EventArgs e)
+        {
+            if (hover?.MouseMove(e) == true)
+            {
+                Invalidate(hover.Bounds);
+            }
+            if (hover?.MouseLeave(e) == true)
+            {
+                Invalidate(hover.Bounds);
+            }
+            hover = null;
         }
 
         #endregion

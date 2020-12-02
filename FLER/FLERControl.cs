@@ -177,9 +177,61 @@ namespace FLER
     }
     class FlashcardControl : FLERControl
     {
+        public bool flipped, going;
+        public List<Image> Sprites { get => flipped ? hidden : visible; }
+        public readonly List<Image> visible = new List<Image>();
+        public readonly List<Image> hidden = new List<Image>();
+        public int counter = 0;
+        bool outline = false;
         public FlashcardControl()
         {
-            
+            Cursor = Cursors.Hand;
+        }
+
+        public override bool Paint(PaintEventArgs e)
+        {
+            Region r = e.Graphics.Clip;
+            e.Graphics.IntersectClip(Bounds);
+            e.Graphics.DrawImage(Sprites[counter], Bounds);
+            using Pen p = new Pen(Color.Red, 4);
+            if (outline) e.Graphics.DrawRectangle(p, Bounds);
+            e.Graphics.Clip = r;
+            return base.Paint(e);
+        }
+
+        public override bool Click(EventArgs e)
+        {
+            going = true;
+            base.Click(e);
+            return true;
+        }
+
+        public override bool MouseEnter(EventArgs e)
+        {
+            outline = true;
+            base.MouseEnter(e);
+            return true;
+        }
+
+        public override bool MouseLeave(EventArgs e)
+        {
+            outline = false;
+            base.MouseLeave(e);
+            return true;
+        }
+
+        int c = 0;
+        public bool Flip()
+        {
+            Console.WriteLine(c++);
+            bool output = going;
+            if (going && ++counter >= Sprites.Count)
+            {
+                counter = 0;
+                flipped = !flipped;
+                going = false;
+            }
+            return output;
         }
     }
 }
