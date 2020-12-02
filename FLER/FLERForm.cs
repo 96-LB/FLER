@@ -135,7 +135,7 @@ namespace FLER
                     if (Flashcard.TryLoad(name, out Flashcard card))
                     {
                         //add it to the list
-                        Cards.Add(name, card);
+                        Cards.Add(Path.GetFileName(name), card);
                     }
                     else
                     {
@@ -160,10 +160,19 @@ namespace FLER
         private void DrawCard()
         {
             ///note: not final implementation
+            if (CurrentCard != null)
+            {
+                UpdateCard(checkBox1.Checked);
+            }
             NextCard();
             if (CurrentCard != null)
             {
-                UpdateCard(MessageBox.Show(JsonConvert.SerializeObject(CurrentCard), CurrentDir, MessageBoxButtons.YesNo) == DialogResult.Yes);
+                checkBox1.Text = "" + CurrentCard.level;
+                Refresh();
+            }
+            else
+            {
+                checkBox1.Text = "null";
             }
         }
 
@@ -180,6 +189,12 @@ namespace FLER
             //sets the directory and card
             CurrentDir = current.Key;
             CurrentCard = current.Value;
+
+            //load the sprites of the selected card
+            if (CurrentCard != null)
+            {
+                LoadCard(CurrentCard, CurrentDir);
+            }
         }
 
         /// <summary>
@@ -360,7 +375,7 @@ namespace FLER
                 }
                 catch
                 {
-                    Image img = RotateFace(visible[0] ?? (visible[0] = RenderFace(card.visible)), flipped ? i - 180 : i);
+                    Image img = RotateFace(visible[0] ??= RenderFace(card.visible), flipped ? i - 180 : i);
                     string path = Path.Combine(IMG_DIR, vguid, i + ".png");
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
@@ -375,7 +390,7 @@ namespace FLER
                 }
                 catch
                 {
-                    Image img = RotateFace(hidden[0] ?? (hidden[0] = RenderFace(card.hidden)), flipped ? i : i - 180);
+                    Image img = RotateFace(hidden[0] ??= RenderFace(card.hidden), flipped ? i : i - 180);
                     string path = Path.Combine(IMG_DIR, hguid, i + ".png");
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
