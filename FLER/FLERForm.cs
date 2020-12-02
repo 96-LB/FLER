@@ -425,17 +425,92 @@ namespace FLER
             Invalidate();
         }
 
+        List<FLERControl> controls = new List<FLERControl>();
+        FLERControl hover;
+        FLERControl selected;
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
             e.Graphics.DrawImage(Sprites[counter], 100, 100, 640, 320);
+
+            foreach (FLERControl f in controls)
+            {
+                if (f.Bounds.IntersectsWith(e.ClipRectangle) && f.Paint(e))
+                {
+                    Invalidate(f.Bounds);
+                }
+            }
+        }
+
+        private void FLERForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (hover?.MouseDown(e) == true)
+            {
+                Invalidate(hover.Bounds);
+            }
+            selected = hover;
+        }
+
+        private void FLERForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (hover?.MouseUp(e) == true)
+            {
+                Invalidate(hover.Bounds);
+            }
+            if (selected == hover && selected?.Click(e) == true)
+            {
+                Invalidate(selected.Bounds);
+            }
+            selected = null;
+        }
+
+        private void FLERForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (hover?.MouseMove(e) == true)
+            {
+                Invalidate(hover.Bounds);
+            }
+            Point pointer = PointToClient(Cursor.Position);
+            FLERControl next = null;
+            if (selected == null)
+            {
+                foreach (FLERControl control in controls)
+                {
+                    if (control.Bounds.Contains(pointer))
+                    {
+                        next = control;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (selected.Bounds.Contains(pointer))
+                {
+                    hover = selected;
+                }
+            }
+            
+            if(next != hover)
+            {
+                if (hover?.MouseLeave(e) == true)
+                {
+                    Invalidate(hover.Bounds);
+                }
+                if (next?.MouseEnter(e) == true)
+                {
+                    Invalidate(next.Bounds);
+                }
+            }
+
+            hover = next;
+            Cursor.Current = hover?.Cursor ?? Cursor;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Start();
         }
-
 
         #endregion
 

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Flashcard.cs" />
+    <Compile Include="FLERControl.cs" />
     <Compile Include="FLERForm.cs">
       <SubType>Form</SubType>
     </Compile>

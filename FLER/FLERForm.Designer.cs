@@ -93,6 +93,9 @@
             this.Name = "FLERForm";
             this.Text = "Form1";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FLERForm_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FLERForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FLERForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FLERForm_MouseUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 
