@@ -175,6 +175,7 @@ namespace FLER
             {
                 checkBox1.Text = "null";
             }
+            fc.Width += RAND.Next(-50, 51);
         }
 
         /// <summary>
@@ -346,7 +347,7 @@ namespace FLER
             return output;
         }
 
-        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 560, 320) };
+        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 720, 160), Factor = 0.25f, Radius = 24 };
 
         void LoadCard(Flashcard card, string filename)
         {
@@ -435,6 +436,8 @@ namespace FLER
                     Invalidate(f.Bounds);
                 }
             }
+
+            Cursor = hover?.Cursor ?? Cursors.Default;
         }
 
         private void FLERForm_MouseDown(object sender, MouseEventArgs e)
@@ -513,10 +516,6 @@ namespace FLER
 
         private void FLERForm_MouseLeave(object sender, EventArgs e)
         {
-            if (hover?.MouseMove(e) == true)
-            {
-                Invalidate(hover.Bounds);
-            }
             if (hover?.MouseLeave(e) == true)
             {
                 Invalidate(hover.Bounds);
