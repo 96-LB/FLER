@@ -18,12 +18,37 @@ namespace FLER
         /// </summary>
         public static readonly Font FONT_DEF = new Font("Arial", 18);
 
-        public List<Image> Sprites { get => flipped ? hidden : visible; }
-        public readonly List<Image> visible = new List<Image>();
-        public readonly List<Image> hidden = new List<Image>();
+        /// <summary>
+        /// [Internal] The list of sprites for the currently selected face
+        /// </summary>
+        private List<Image> Sprites { get => flipped ? _hidden : _visible; }
 
-        public float Factor { get; set; }
-        public int Radius { get; set; }
+        /// <summary>
+        /// The list of sprites for the visible face
+        /// </summary>
+        private readonly List<Image> _visible = new List<Image>();
+
+        /// <summary>
+        /// The list of sprites for the hidden face
+        /// </summary>
+        private readonly List<Image> _hidden = new List<Image>();
+
+        public const float FACTOR = 0.25f;
+        public const int RADIUS = 24;
+        public const int DIAMETER = RADIUS * 2;
+        public const int OUTLINE = 2;
+        public const int OUT = OUTLINE / 2;
+
+        public const int BASEWIDTH = 480;
+        public const int BASEHEIGHT = 320;
+
+        public const float IMGWIDTH = BASEWIDTH + FACTOR * BASEHEIGHT;
+        public const float IMGHEIGHT = BASEHEIGHT;
+
+        public const int RIGHT = BASEWIDTH - DIAMETER - OUT;
+        public const int BOTTOM = BASEHEIGHT - DIAMETER - OUT;
+
+        public const int INTERVAL = 3;
 
         public bool flipped, going;
         bool mouse = false;
@@ -34,19 +59,11 @@ namespace FLER
 
         Bitmap RenderFace(Flashcard.Face face)
         {
-            ///note: not final implementation
-            const int RADIUS = 24;
-            const int DIAMETER = RADIUS * 2;
-            const int OUTLINE = 2;
-            const int OUT = OUTLINE / 2;
+            ///note: not final implementation]
+            
 
-            const int IMGWIDTH = 480;
-            const int IMGHEIGHT = 320;
 
-            const int RIGHT = IMGWIDTH - DIAMETER - OUT;
-            const int BOTTOM = IMGHEIGHT - DIAMETER - OUT;
-
-            Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
+            Bitmap bmp = new Bitmap(BASEWIDTH, BASEHEIGHT);
             using Graphics graphics = Graphics.FromImage(bmp);
             using GraphicsPath path = new GraphicsPath();
             using Brush backColor = new SolidBrush(face.BackColor);
@@ -109,8 +126,6 @@ namespace FLER
         Bitmap RotateFace(Image img, int degrees)
         {
             ///note: not final implementation
-            const double FACTOR = 0.25;
-
             static Graphics qualityGraphics(Bitmap bmp)
             {
                 Graphics graphics = Graphics.FromImage(bmp);
@@ -153,21 +168,19 @@ namespace FLER
 
         public bool LoadCard(Flashcard card)
         {
-            const int INTERVAL = 3;
-
-            foreach (Image img in visible)
+            foreach (Image img in _visible)
             {
                 img.Dispose();
             }
-            foreach (Image img in hidden)
+            foreach (Image img in _hidden)
             {
                 img.Dispose();
             }
-            visible.Clear();
-            hidden.Clear();
+            _visible.Clear();
+            _hidden.Clear();
 
-            visible.Add(null);
-            hidden.Add(null);
+            _visible.Add(null);
+            _hidden.Add(null);
 
             string path;
             for (int i = 0; i < 180; i += INTERVAL)
@@ -180,7 +193,7 @@ namespace FLER
                 }
                 catch
                 {
-                    Image img = RotateFace(visible[0] ??= RenderFace(card.Visible), flipped ? i - 180 : i);
+                    Image img = RotateFace(_visible[0] ??= RenderFace(card.Visible), flipped ? i - 180 : i);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
                     Sprites.Add(img);
@@ -194,15 +207,15 @@ namespace FLER
                 }
                 catch
                 {
-                    Image img = RotateFace(hidden[0] ??= RenderFace(card.Hidden), flipped ? i : i - 180);
+                    Image img = RotateFace(_hidden[0] ??= RenderFace(card.Hidden), flipped ? i : i - 180);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
                     Sprites.Add(img);
                 }
             }
 
-            visible.RemoveAt(0);
-            hidden.RemoveAt(0);
+            _visible.RemoveAt(0);
+            _hidden.RemoveAt(0);
 
             return true;
         }
@@ -241,20 +254,18 @@ namespace FLER
                 path.Reset();
                 if (Sprites.Count > 0)
                 {
-                    float WIDTH = Sprites[0].Width;
-                    float HEIGHT = Sprites[0].Height;
-                    float WDIAMETER = Math.Min(WIDTH, Radius * 2);
-                    float HDIAMETER = Math.Min(HEIGHT, Radius * 2);
-                    float LEFT = HEIGHT * Factor * 0.5f;
-                    float RIGHT = WIDTH - WDIAMETER - LEFT;
-                    float BOTTOM = HEIGHT - HDIAMETER;
-                    float WFACTOR = Width / WIDTH;
-                    float HFACTOR = Height / HEIGHT;
+                    float WFACTOR = Width / IMGWIDTH;
+                    float HFACTOR = Height / IMGHEIGHT;
+                    float WDIAMETER = WFACTOR * Math.Min(IMGWIDTH, DIAMETER);
+                    float HDIAMETER = HFACTOR * Math.Min(IMGHEIGHT, DIAMETER);
+                    float PLEFT = WFACTOR * IMGHEIGHT * FACTOR * 0.5f;
+                    float PRIGHT = WFACTOR * (IMGWIDTH - WDIAMETER) - PLEFT;
+                    float PBOTTOM = HFACTOR * (IMGHEIGHT - HDIAMETER);
 
-                    path.AddArc(WFACTOR * LEFT, 0, WFACTOR * WDIAMETER, HFACTOR * HDIAMETER, 180, 90);
-                    path.AddArc(WFACTOR * RIGHT, 0, WFACTOR * WDIAMETER, HFACTOR * HDIAMETER, 270, 90);
-                    path.AddArc(WFACTOR * RIGHT, HFACTOR * BOTTOM, WFACTOR * WDIAMETER, HFACTOR * HDIAMETER, 0, 90);
-                    path.AddArc(WFACTOR * LEFT, HFACTOR * BOTTOM, WFACTOR * WDIAMETER, HFACTOR * HDIAMETER, 90, 90);
+                    path.AddArc(PLEFT, 0, WDIAMETER, HDIAMETER, 180, 90);
+                    path.AddArc(PRIGHT, 0, WDIAMETER, HDIAMETER, 270, 90);
+                    path.AddArc(PRIGHT, PBOTTOM, WDIAMETER, HDIAMETER, 0, 90);
+                    path.AddArc(PLEFT, PBOTTOM, WDIAMETER, HDIAMETER, 90, 90);
                     path.CloseFigure();
 
                     oldSize = Size;

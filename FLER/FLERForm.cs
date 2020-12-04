@@ -219,7 +219,7 @@ namespace FLER
             DrawCard();
         }
 
-        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 720, 160), Factor = 0.25f, Radius = 24 };
+        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, (int)FlashcardControl.IMGWIDTH, (int)FlashcardControl.IMGHEIGHT) };
 
         private void timer1_Tick(object sender, EventArgs e)
         {
