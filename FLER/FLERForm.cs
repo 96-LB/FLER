@@ -31,11 +31,6 @@ namespace FLER
         public static readonly string IMG_DIR = Path.Combine(CARD_DIR, "IMG");
 
         /// <summary>
-        /// The default font to use when none is specified
-        /// </summary>
-        public static readonly Font FONT_DEF = new Font("Arial", 18);
-
-        /// <summary>
         /// A pseudorandom number generator
         /// </summary>
         private readonly Random RAND = new Random();
@@ -91,7 +86,10 @@ namespace FLER
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("ff.fler", out f);
-            LoadCard(f);
+            if (fc.LoadCard(f))
+            {
+                Invalidate();
+            }
             controls.Add(fc);
         }
         /// TEST CODE
@@ -186,9 +184,9 @@ namespace FLER
             CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
             //load the sprites of the selected card
-            if (CurrentCard != null)
+            if (CurrentCard != null && fc.LoadCard(CurrentCard))
             {
-                LoadCard(CurrentCard);
+                Invalidate();
             }
         }
 
@@ -221,186 +219,7 @@ namespace FLER
             DrawCard();
         }
 
-        Bitmap RenderFace(Flashcard.Face face)
-        {
-            ///note: not final implementation
-            const int RADIUS = 24;
-            const int DIAMETER = RADIUS * 2;
-            const int OUTLINE = 2;
-            const int OUT = OUTLINE / 2;
-
-            const int IMGWIDTH = 480;
-            const int IMGHEIGHT = 320;
-
-            const int RIGHT = IMGWIDTH - DIAMETER - OUT;
-            const int BOTTOM = IMGHEIGHT - DIAMETER - OUT;
-
-            Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
-            using Graphics graphics = Graphics.FromImage(bmp);
-            using GraphicsPath path = new GraphicsPath();
-            using Brush backColor = new SolidBrush(face.BackColor);
-            using Brush foreColor = new SolidBrush(face.ForeColor);
-            using Pen forePen = new Pen(face.ForeColor, OUTLINE);
-
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
-            path.AddArc(RIGHT, OUT, DIAMETER, DIAMETER, 270, 90);
-            path.AddArc(RIGHT, BOTTOM, DIAMETER, DIAMETER, 0, 90);
-            path.AddArc(OUT, BOTTOM, DIAMETER, DIAMETER, 90, 90);
-            path.CloseFigure();
-
-
-            graphics.FillPath(backColor, path);
-
-            void renderText()
-            {
-                graphics.SetClip(path);
-                graphics.IntersectClip(face.TextBox);
-                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, foreColor, face.TextBox, face.TextFormat);
-            }
-
-            void renderImage()
-            {
-                if (face.ImagePath != null)
-                {
-                    graphics.SetClip(path);
-                    graphics.IntersectClip(face.ImageBox);
-                    try
-                    {
-                        using Image img = Image.FromFile(face.ImagePath);
-                        graphics.DrawImage(img, face.ImageBox);
-                    }
-                    catch
-                    {
-                        graphics.DrawImage(Properties.Resources.Missing, face.ImageBox);
-                    }
-                }
-            }
-
-            if (face.ImageTop)
-            {
-                renderText();
-                renderImage();
-            }
-            else
-            {
-                renderImage();
-                renderText();
-            }
-
-            graphics.ResetClip();
-            graphics.DrawPath(forePen, path);
-
-            return bmp;
-        }
-
-
-        Bitmap RotateFace(Image img, int degrees)
-        {
-            ///note: not final implementation
-            const double FACTOR = 0.25;
-
-            static Graphics qualityGraphics(Bitmap bmp)
-            {
-                Graphics graphics = Graphics.FromImage(bmp);
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                return graphics;
-            }
-
-            static int round(double num) => (int)Math.Round(num);
-
-            using Bitmap bmp = new Bitmap(img.Width + round(img.Height * FACTOR), img.Height);
-            using Graphics graphics = qualityGraphics(bmp);
-            using ImageAttributes attributes = new ImageAttributes();
-            attributes.SetWrapMode(WrapMode.TileFlipXY);
-
-            double rad = degrees * Math.PI / 180.0;
-            double sin = FACTOR * Math.Sin(rad);
-            double cos = Math.Cos(rad);
-
-            for (int i = 0; i < img.Height; i++)
-            {
-                int width = round(2 * sin * ((double)i / img.Height - 0.5) * img.Height + img.Width);
-                graphics.DrawImage(img,
-                    new Rectangle((bmp.Width - width) / 2, i, width, 1),
-                    0, i, img.Width, 1,
-                    GraphicsUnit.Pixel, attributes);
-            }
-            Bitmap output = new Bitmap(bmp.Width, bmp.Height);
-            using Graphics outgraphics = qualityGraphics(output);
-
-            outgraphics.DrawImage(bmp,
-                new Rectangle(0, round(0.5 * (1 - cos) * output.Height), output.Width, round(cos * output.Height)),
-                0, 0, bmp.Width, bmp.Height,
-                GraphicsUnit.Pixel, attributes);
-
-            return output;
-        }
-
         readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 720, 160), Factor = 0.25f, Radius = 24 };
-
-        void LoadCard(Flashcard card)
-        {
-            const int INTERVAL = 3;
-
-            foreach (Image img in fc.visible)
-            {
-                img.Dispose();
-            }
-            foreach (Image img in fc.hidden)
-            {
-                img.Dispose();
-            }
-            fc.visible.Clear();
-            fc.hidden.Clear();
-
-            fc.visible.Add(null);
-            fc.hidden.Add(null);
-
-            string path;
-            for (int i = 0; i < 180; i += INTERVAL)
-            {
-                fc.flipped = i > 90;
-                path = Path.Combine(IMG_DIR, card.Filename, "v", i + ".png");
-                try
-                {
-                    fc.Sprites.Add(Image.FromFile(path));
-                }
-                catch
-                {
-                    Image img = RotateFace(fc.visible[0] ??= RenderFace(card.Visible), fc.flipped ? i - 180 : i);
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    img.Save(path);
-                    fc.Sprites.Add(img);
-                }
-
-                fc.flipped = !fc.flipped;
-                path = Path.Combine(IMG_DIR, card.Filename, "h", i + ".png");
-                try
-                {
-                    fc.Sprites.Add(Image.FromFile(path));
-                }
-                catch
-                {
-                    Image img = RotateFace(fc.hidden[0] ??= RenderFace(card.Hidden), fc.flipped ? i : i - 180);
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    img.Save(path);
-                    fc.Sprites.Add(img);
-                }
-            }
-
-            if (fc.visible[0] != null || fc.hidden[0] != null)
-            {
-                card.Save();
-            }
-
-            fc.visible.RemoveAt(0);
-            fc.hidden.RemoveAt(0);
-        }
-
 
         private void timer1_Tick(object sender, EventArgs e)
         {
