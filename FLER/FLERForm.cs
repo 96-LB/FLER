@@ -50,11 +50,6 @@ namespace FLER
         Dictionary<string, Flashcard> Cards { get; set; } = new Dictionary<string, Flashcard>();
 
         /// <summary>
-        /// The filename of the flashcard currently being reviewed
-        /// </summary>
-        string CurrentDir { get; set; }
-
-        /// <summary>
         /// The flashcard currently being reviewed
         /// </summary>
         Flashcard CurrentCard { get; set; }
@@ -80,21 +75,23 @@ namespace FLER
 
             var f = new Flashcard()
             {
-                tags = new string[] { "first" },
-                hidden = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 500, 500), imagePath = @"C:\Users\Admin\Downloads\96LB_BRR.png", imageBox = new Rectangle(-250, -250, 750, 750) },
-                visible = new Flashcard.Face() { text = "first card", backColor = Color.SkyBlue, foreColor = Color.DeepSkyBlue, font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 500, 500), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", imageBox = new Rectangle(-250, -250, 750, 750) }
+                Filename = "first.fler",
+                Tags = new string[] { "first" },
+                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.SkyBlue, ForeColor = Color.DeepSkyBlue, Font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 500, 500), ImagePath = @"C:\Users\Admin\Downloads\96LB_BRR.png", ImageBox = new Rectangle(-250, -250, 750, 750) },
+                Visible = new Flashcard.Face() { Text = "first card", BackColor = Color.SkyBlue, ForeColor = Color.DeepSkyBlue, Font = new Font("OCR A Extended", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 500, 500), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", ImageBox = new Rectangle(-250, -250, 750, 750) }
             };
-            //f.Save("first.fler");
-            //new Flashcard() { hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save("empty.fler");
+            //f.Save();
+            //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
             f = new Flashcard()
             {
-                tags = new string[] { "first" },
-                hidden = new Flashcard.Face() { text = "first card", backColor = Color.DarkMagenta, foreColor = Color.Magenta, font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 480, 320), imageBox = new Rectangle(-250, -250, 750, 750), textFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
-                visible = new Flashcard.Face() { text = "you did it!", backColor = Color.DarkMagenta, foreColor = Color.Magenta, font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), textBox = new Rectangle(0, 0, 480, 320), imagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", textFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
+                Filename = "ff.fler",
+                Tags = new string[] { "first" },
+                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, ForeColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
+                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, ForeColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("ff.fler", out f);
-            LoadCard(f, "ff.fler");
+            LoadCard(f);
             controls.Add(fc);
         }
         /// TEST CODE
@@ -133,7 +130,7 @@ namespace FLER
                 foreach (string name in Directory.EnumerateFiles(CARD_DIR))
                 {
                     //if a flashcard can be loaded
-                    if (Flashcard.TryLoad(name, out Flashcard card))
+                    if (Flashcard.TryLoad(Path.GetFileName(name), out Flashcard card))
                     {
                         //add it to the list
                         Cards.Add(Path.GetFileName(name), card);
@@ -168,7 +165,7 @@ namespace FLER
             NextCard();
             if (CurrentCard != null)
             {
-                checkBox1.Text = "" + CurrentCard.level;
+                checkBox1.Text = "" + CurrentCard.Level;
                 Invalidate(fc.Bounds);
             }
             else
@@ -185,17 +182,13 @@ namespace FLER
         {
             ///note: not final implementation
             ///TEST CODE: CHANGE TimeSpan.FromSeconds TO TimeSpan.FromDays ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
-            //returns a random card in the list whose last-reviewed time is at least 2^level days ago
-            KeyValuePair<string, Flashcard> current = Cards.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Value.date >= TimeSpan.FromSeconds(Math.Pow(2, x.Value.level)));
-
-            //sets the directory and card
-            CurrentDir = current.Key;
-            CurrentCard = current.Value;
+            //chooses a random card in the list whose last-reviewed time is at least 2^level days ago
+            CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
             //load the sprites of the selected card
             if (CurrentCard != null)
             {
-                LoadCard(CurrentCard, CurrentDir);
+                LoadCard(CurrentCard);
             }
         }
 
@@ -207,9 +200,9 @@ namespace FLER
         {
             ///note: not final implementation
             //sets the card's last review date and adjusts the card's level accordingly 
-            CurrentCard.date = DateTime.UtcNow;
-            CurrentCard.level = levelUp ? CurrentCard.level + 1 : 0;
-            CurrentCard.Save(CurrentDir);
+            CurrentCard.Date = DateTime.UtcNow;
+            CurrentCard.Level = levelUp ? CurrentCard.Level + 1 : 0;
+            CurrentCard.Save();
         }
 
         #endregion
@@ -245,9 +238,9 @@ namespace FLER
             Bitmap bmp = new Bitmap(IMGWIDTH, IMGHEIGHT);
             using Graphics graphics = Graphics.FromImage(bmp);
             using GraphicsPath path = new GraphicsPath();
-            using Brush backColor = new SolidBrush(face.backColor);
-            using Brush foreColor = new SolidBrush(face.foreColor);
-            using Pen forePen = new Pen(face.foreColor, OUTLINE);
+            using Brush backColor = new SolidBrush(face.BackColor);
+            using Brush foreColor = new SolidBrush(face.ForeColor);
+            using Pen forePen = new Pen(face.ForeColor, OUTLINE);
 
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             path.AddArc(OUT, OUT, DIAMETER, DIAMETER, 180, 90);
@@ -262,29 +255,29 @@ namespace FLER
             void renderText()
             {
                 graphics.SetClip(path);
-                graphics.IntersectClip(face.textBox);
-                graphics.DrawString(face.text, face.font ?? FONT_DEF, foreColor, face.textBox, face.textFormat);
+                graphics.IntersectClip(face.TextBox);
+                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, foreColor, face.TextBox, face.TextFormat);
             }
 
             void renderImage()
             {
-                if (face.imagePath != null)
+                if (face.ImagePath != null)
                 {
                     graphics.SetClip(path);
-                    graphics.IntersectClip(face.imageBox);
+                    graphics.IntersectClip(face.ImageBox);
                     try
                     {
-                        using Image img = Image.FromFile(face.imagePath);
-                        graphics.DrawImage(img, face.imageBox);
+                        using Image img = Image.FromFile(face.ImagePath);
+                        graphics.DrawImage(img, face.ImageBox);
                     }
                     catch
                     {
-                        graphics.DrawImage(Properties.Resources.Missing, face.imageBox);
+                        graphics.DrawImage(Properties.Resources.Missing, face.ImageBox);
                     }
                 }
             }
 
-            if (face.imageTop)
+            if (face.ImageTop)
             {
                 renderText();
                 renderImage();
@@ -349,7 +342,7 @@ namespace FLER
 
         readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, 720, 160), Factor = 0.25f, Radius = 24 };
 
-        void LoadCard(Flashcard card, string filename)
+        void LoadCard(Flashcard card)
         {
             const int INTERVAL = 3;
 
@@ -364,48 +357,44 @@ namespace FLER
             fc.visible.Clear();
             fc.hidden.Clear();
 
-            string vguid = Guid.NewGuid().ToString();
-            string hguid = Guid.NewGuid().ToString();
-
             fc.visible.Add(null);
             fc.hidden.Add(null);
 
+            string path;
             for (int i = 0; i < 180; i += INTERVAL)
             {
                 fc.flipped = i > 90;
+                path = Path.Combine(IMG_DIR, card.Filename, "v", i + ".png");
                 try
                 {
-                    fc.Sprites.Add(Image.FromFile(card.visible.sprites[i]));
+                    fc.Sprites.Add(Image.FromFile(path));
                 }
                 catch
                 {
-                    Image img = RotateFace(fc.visible[0] ??= RenderFace(card.visible), fc.flipped ? i - 180 : i);
-                    string path = Path.Combine(IMG_DIR, vguid, i + ".png");
+                    Image img = RotateFace(fc.visible[0] ??= RenderFace(card.Visible), fc.flipped ? i - 180 : i);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
-                    card.visible.sprites[i] = path;
                     fc.Sprites.Add(img);
                 }
 
                 fc.flipped = !fc.flipped;
+                path = Path.Combine(IMG_DIR, card.Filename, "h", i + ".png");
                 try
                 {
-                    fc.Sprites.Add(Image.FromFile(card.hidden.sprites[i]));
+                    fc.Sprites.Add(Image.FromFile(path));
                 }
                 catch
                 {
-                    Image img = RotateFace(fc.hidden[0] ??= RenderFace(card.hidden), fc.flipped ? i : i - 180);
-                    string path = Path.Combine(IMG_DIR, hguid, i + ".png");
+                    Image img = RotateFace(fc.hidden[0] ??= RenderFace(card.Hidden), fc.flipped ? i : i - 180);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
                     img.Save(path);
-                    card.hidden.sprites[i] = path;
                     fc.Sprites.Add(img);
                 }
             }
 
             if (fc.visible[0] != null || fc.hidden[0] != null)
             {
-                card.Save(filename);
+                card.Save();
             }
 
             fc.visible.RemoveAt(0);

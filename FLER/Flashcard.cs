@@ -23,84 +23,84 @@ namespace FLER
         {
 
             /// <summary>
-            /// A list of file paths pointing to each of the pre-generated sprites
-            /// </summary>
-            public string[] sprites;
-
-            /// <summary>
             /// The color used to fill the background
             /// </summary>
-            public Color backColor;
+            public Color BackColor { get; set; }
 
             /// <summary>
             /// The bounds of the text box
             /// </summary>
-            public Rectangle textBox;
+            public Rectangle TextBox { get; set; }
 
             /// <summary>
             /// The content of the text box
             /// </summary>
-            public string text;
+            public string Text { get; set; }
 
             /// <summary>
             /// The format of the text box
             /// </summary>
-            public StringFormat textFormat;
+            public StringFormat TextFormat { get; set; }
 
             /// <summary>
             /// The font used to render the text box
             /// </summary>
-            public Font font;
+            public Font Font { get; set; }
 
             /// <summary>
             /// The color of the text in the textbox
             /// </summary>
-            public Color foreColor;
+            public Color ForeColor { get; set; }
 
             /// <summary>
             /// The bounds of the image box
             /// </summary>
-            public Rectangle imageBox;
+            public Rectangle ImageBox { get; set; }
 
             /// <summary>
             /// A file path pointing to content of the image box
             /// </summary>
-            public string imagePath;
+            public string ImagePath { get; set; }
 
             /// <summary>
             /// Whether the image box should render overtop of the text box
             /// </summary>
-            public bool imageTop;
+            public bool ImageTop { get; set; }
         }
 
         #endregion
 
-        #region Fields
+        #region Properties
 
         /// <summary>
-        /// The level at which this card currently resides
+        /// The file from which the flashcard was loaded
         /// </summary>
-        public int level;
+        public string Filename { get; set; }
 
         /// <summary>
-        /// The date at which this card was last reviewed
+        /// The level at which the flashcard currently resides
         /// </summary>
-        public DateTime date;
+        public int Level { get; set; }
 
         /// <summary>
-        /// The tags associated with this card
+        /// The date at which the flashcard was last reviewed
         /// </summary>
-        public string[] tags;
+        public DateTime Date { get; set; }
 
         /// <summary>
-        /// The visible face of this card, displaying the prompt
+        /// The tags associated with the flashcard
         /// </summary>
-        public Face visible;
+        public string[] Tags { get; set; }
 
         /// <summary>
-        /// The hidden face of this card, displaying the answer
+        /// The visible face of the flashcard, displaying the prompt
         /// </summary>
-        public Face hidden;
+        public Face Visible { get; set; }
+
+        /// <summary>
+        /// The hidden face of the flashcard, displaying the answer
+        /// </summary>
+        public Face Hidden { get; set; }
 
         #endregion
 
@@ -181,8 +181,8 @@ namespace FLER
         /// <summary>
         /// Attempts to load a flashcard from the given path
         /// </summary>
-        /// <param name="filename">The path from which to load a card</param>
-        /// <param name="card">The loaded card</param>
+        /// <param name="filepath">The path from which to load a flashcard</param>
+        /// <param name="card">The loaded flashcard</param>
         /// <returns>Whether the operation was successful</returns>
         public static bool TryLoad(string filename, out Flashcard card)
         {
@@ -190,14 +190,14 @@ namespace FLER
             card = null;
 
             //navigates to the card directory
-            filename = Path.Combine(FLERForm.CARD_DIR, filename);
+            string filepath = Path.Combine(FLERForm.CARD_DIR, filename);
 
-            if (!File.Exists(filename))
+            if (!File.Exists(filepath))
             {
                 return false; //if the file doesn't exist, the load fails
             }
 
-            using FileStream stream = File.OpenRead(filename); //the file to be read
+            using FileStream stream = File.OpenRead(filepath); //the file to be read
 
             if (!VerifyChecksum(stream))
             {
@@ -220,23 +220,13 @@ namespace FLER
                 card = JsonConvert.DeserializeObject<Flashcard>(sr.ReadToEnd());
 
                 //if either face doesn't exist, the load fails
-                if (card.visible == null || card.hidden == null)
+                if (card.Visible == null || card.Hidden == null)
                 {
                     card = null;
                 }
-                else
-                {
-                    //if the sprite array isn't properly set, give it an empty array
-                    if (card.visible.sprites == null || card.visible.sprites.Length != 180)
-                    {
-                        card.visible.sprites = new string[180];
-                    }
-                    //do the same for both sides of the card
-                    if (card.hidden.sprites == null || card.hidden.sprites.Length != 180)
-                    {
-                        card.hidden.sprites = new string[180];
-                    }
-                }
+
+                //sets the filename from which the flashcard was loaded
+                card.Filename = filename; 
 
                 return card != null; //returns whether the load was successful
             }
@@ -251,12 +241,20 @@ namespace FLER
         #region Public Instance
 
         /// <summary>
-        /// Saves this flashcard to the specified file path
+        /// Saves the flashcard to the filename from which it was loaded
         /// </summary>
-        /// <param name="filename">A path pointing to where the card should be saved</param>
+        public void Save()
+        {
+            Save(Filename);
+        }
+
+        /// <summary>
+        /// Saves the flashcard to the specified file path
+        /// </summary>
+        /// <param name="filename">A path pointing to where the flashcard should be saved</param>
         public void Save(string filename)
         {
-            string json = JsonConvert.SerializeObject(this); //serializes this card in json format
+            string json = JsonConvert.SerializeObject(this); //serializes the flashcard in json format
 
             //navigates to the card directory
             filename = Path.Combine(FLERForm.CARD_DIR, filename);
