@@ -151,7 +151,7 @@ namespace FLER
         }
 
         /// <summary>
-        /// Draws a card from the pool and reviews it
+        /// Draws a flashcard from the pool and reviews it
         /// </summary>
         private void DrawCard()
         {
@@ -174,16 +174,16 @@ namespace FLER
         }
 
         /// <summary>
-        /// Identifies and selects the next card to be reviewed
+        /// Identifies and selects the next flashcard to be reviewed
         /// </summary>
         private void NextCard()
         {
             ///note: not final implementation
             ///TEST CODE: CHANGE TimeSpan.FromSeconds TO TimeSpan.FromDays ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
-            //chooses a random card in the list whose last-reviewed time is at least 2^level days ago
+            //chooses a random flashcard in the list whose last-reviewed time is at least 2^level days ago
             CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
-            //load the sprites of the selected card
+            //load the sprites of the selected flashcard
             if (CurrentCard != null && fc.LoadCard(CurrentCard))
             {
                 Invalidate();
@@ -191,13 +191,13 @@ namespace FLER
         }
 
         /// <summary>
-        /// Updates the current card based on the review verdict
+        /// Updates the current flashcard based on the review verdict
         /// </summary>
-        /// <param name="levelUp">Whether the card is moving up a level</param>
+        /// <param name="levelUp">Whether the flashcard is moving up a level</param>
         private void UpdateCard(bool levelUp)
         {
             ///note: not final implementation
-            //sets the card's last review date and adjusts the card's level accordingly 
+            //sets the flashcard's last review date and adjusts the flashcard's level accordingly 
             CurrentCard.Date = DateTime.UtcNow;
             CurrentCard.Level = levelUp ? CurrentCard.Level + 1 : 0;
             CurrentCard.Save();

@@ -13,32 +13,41 @@ namespace FLER
 {
     class FlashcardControl : FLERControl
     {
+
+        #region Properties
+
         /// <summary>
         /// [Internal] The list of sprites for the currently selected face
         /// </summary>
-        private List<Image> Sprites { get => flipped ? _hidden : _visible; }
+        private List<Image> Sprites { get => _flipped ? _hidden : _visible; }
+
+        #region [Sprites] Backing Fields
 
         /// <summary>
-        /// The list of sprites for the visible face
+        /// [Internal] The list of sprites for the visible face
         /// </summary>
         private readonly List<Image> _visible = new List<Image>();
 
         /// <summary>
-        /// The list of sprites for the hidden face
+        /// [Internal] The list of sprites for the hidden face
         /// </summary>
         private readonly List<Image> _hidden = new List<Image>();
+
+        #endregion
+
+        #endregion
 
         #region Constants
 
         /// <summary>
         /// The perspective factor used when rotating the flashcard sprites
         /// </summary>
-        public const float FACTOR = 1.25f;
+        public const float FACTOR = 0.25f;
 
         /// <summary>
         /// The border radius of the flashcard
         /// </summary>
-        public const int RADIUS = 350;
+        public const int RADIUS = 24;
 
         /// <summary>
         /// The border diameter of the flashcard
@@ -63,7 +72,7 @@ namespace FLER
         /// <summary>
         /// The height of the base flashcard sprite
         /// </summary>
-        public const int BASEHEIGHT = 520;
+        public const int BASEHEIGHT = 320;
 
         /// <summary>
         /// The width of a full flashcard sprite, including room for rotation
@@ -91,12 +100,43 @@ namespace FLER
 
         #endregion
 
-        public bool flipped, going;
-        bool mouse = false;
-        int counter = 0;
-        bool outline = false;
-        Size oldSize = Size.Empty;
-        GraphicsPath boundsPath = new GraphicsPath();
+        #region Fields
+
+        /// <summary>
+        /// [Internal] Whether the flashcard is flipped to show the hidden face
+        /// </summary>
+        private bool _flipped = false;
+
+        /// <summary>
+        /// [Internal] Whether the flashcard is currently flipping
+        /// </summary>
+        private bool _going = false;
+
+        /// <summary>
+        /// [Internal] Whether the mouse is over the flashcard bounds
+        /// </summary>
+        private bool _mouse = false;
+
+        /// <summary>
+        /// [Internal] The index of the current sprite to display
+        /// </summary>
+        private int _counter = 0;
+
+        /// <summary>
+        /// [Internal] The size used to calculate the last flashcard border
+        /// </summary>
+        private Size _size = Size.Empty;
+
+        /// <summary>
+        /// [Internal] The flashcard border
+        /// </summary>
+        private readonly GraphicsPath _bounds = new GraphicsPath();
+
+        #endregion
+
+        #region Methods
+
+        #region Private Static
 
         /// <summary>
         /// Creates a high-quality graphics object from the specified bitmap
@@ -106,13 +146,13 @@ namespace FLER
         private static Graphics QualityGraphics(Bitmap bmp)
         {
             Graphics graphics = Graphics.FromImage(bmp); //graphics initialized from the bitmap
-            
+
             //sets all the options on the graphics to high-quality
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.HighQuality;
-            
+
             return graphics; //returns the initialized graphics
         }
 
@@ -121,29 +161,29 @@ namespace FLER
         /// </summary>
         /// <param name="face">The flashcard face to render</param>
         /// <returns>The base image for a rendered flashcard face</returns>
-        private Bitmap RenderFace(Flashcard.Face face)
+        private static Bitmap RenderFace(Flashcard.Face face)
         {
             Bitmap output = new Bitmap(BASEWIDTH, BASEHEIGHT); //the rendered bitmap
 
             using Graphics graphics = Graphics.FromImage(output); //the graphics with which to draw on the bitmap
-            using GraphicsPath path = new GraphicsPath(); //the border of the card
-            using Brush backColor = new SolidBrush(face.BackColor); //the brush used to color the background of the card
-            using Brush foreColor = new SolidBrush(face.ForeColor); //the brush used to color the text of the card
-            using Pen forePen = new Pen(face.ForeColor, OUTLINE); //the pen used to color the border of the card
+            using GraphicsPath path = new GraphicsPath(); //the border of the flashcard
+            using Brush backColor = new SolidBrush(face.BackColor); //the brush used to color the background of the flashcard
+            using Brush foreColor = new SolidBrush(face.ForeColor); //the brush used to color the text of the flashcard
+            using Pen forePen = new Pen(face.ForeColor, OUTLINE); //the pen used to color the border of the flashcard
 
             int WDIAMETER = Math.Min(DIAMETER, BASEWIDTH - OUTLINE); //the constrained width (horizontal) diameter
             int HDIAMETER = Math.Min(DIAMETER, BASEHEIGHT - OUTLINE); //the constrained height (vertical) diameter
             int RIGHT = BASEWIDTH - WDIAMETER - OUT; //the start position of the right corner arcs
             int BOTTOM = BASEHEIGHT - HDIAMETER - OUT; //the start position of the bottom corner arcs
 
-            //creates the border of the card
+            //creates the border of the flashcard
             path.AddArc(OUT, OUT, WDIAMETER, HDIAMETER, 180, 90);
             path.AddArc(RIGHT, OUT, WDIAMETER, HDIAMETER, 270, 90);
             path.AddArc(RIGHT, BOTTOM, WDIAMETER, HDIAMETER, 0, 90);
             path.AddArc(OUT, BOTTOM, WDIAMETER, HDIAMETER, 90, 90);
             path.CloseFigure();
 
-            //fills the card area
+            //fills the flashcard area
             graphics.FillPath(backColor, path);
 
             //draws the text in the face's text box
@@ -169,10 +209,10 @@ namespace FLER
 
                     try
                     {
-                        using Image img = Image.FromFile(face.ImagePath); //the image to render
+                        using Image image = Image.FromFile(face.ImagePath); //the image to render
 
                         //if the image was successfully loaded, draw it in the image box
-                        graphics.DrawImage(img, face.ImageBox);
+                        graphics.DrawImage(image, face.ImageBox);
                     }
                     catch
                     {
@@ -194,7 +234,7 @@ namespace FLER
                 _renderText();
             }
 
-            //draw the card border
+            //draw the flashcard border
             graphics.ResetClip();
             graphics.DrawPath(forePen, path);
 
@@ -204,14 +244,14 @@ namespace FLER
         /// <summary>
         /// Psuedo-rotates the specified image on the Z-axis by the specified amount
         /// </summary>
-        /// <param name="img">The image to rotate</param>
+        /// <param name="image">The image to rotate</param>
         /// <param name="degrees">The number of degrees to rotate it</param>
         /// <returns>A bitmap of the rotated image</returns>
-        private Bitmap RotateFace(Image img, int degrees)
+        private static Bitmap RotateFace(Image image, int degrees)
         {
             static int round(double num) => (int)Math.Round(num); //a helper function to round to an integral type
 
-            using Bitmap bmp = new Bitmap(img.Width + round(img.Height * FACTOR), img.Height); //an intermediate bitmap
+            using Bitmap bmp = new Bitmap(image.Width + round(image.Height * FACTOR), image.Height); //an intermediate bitmap
             using Graphics graphics = QualityGraphics(bmp); //the graphics with which to draw on the intermediate bitmap
             using ImageAttributes attributes = new ImageAttributes(); //attributes used to sample images correctly
             attributes.SetWrapMode(WrapMode.TileFlipXY);
@@ -221,14 +261,14 @@ namespace FLER
             double COS = Math.Cos(RAD); //the cosine factor in rotation, used for vertical squashing
 
             //iterates over every row in the image and applies a horizontal stretching factor
-            for (int i = 0; i < img.Height; i++)
+            for (int i = 0; i < image.Height; i++)
             {
-                int WIDTH = round(2 * SIN * (i - 0.5f * img.Height) + img.Width); //the width of this row
+                int WIDTH = round(2 * SIN * (i - 0.5f * image.Height) + image.Width); //the width of this row
 
                 //draws the stretched row
-                graphics.DrawImage(img,                                  //the source image
+                graphics.DrawImage(image,                                  //the source image
                     new Rectangle((bmp.Width - WIDTH) / 2, i, WIDTH, 1), //the stretched destination rectangle
-                    0, i, img.Width, 1,                                  //the source rectangle
+                    0, i, image.Width, 1,                                  //the source rectangle
                     GraphicsUnit.Pixel, attributes);                     //the settings
             }
 
@@ -244,6 +284,10 @@ namespace FLER
             return output; //returns the rendered bitmap
         }
 
+        #endregion
+
+        #region Public Instance
+
         /// <summary>
         /// Loads sprites from the given flashcard, rendering any missing ones
         /// </summary>
@@ -252,13 +296,13 @@ namespace FLER
         public bool LoadCard(Flashcard card)
         {
             //disposes and clears all of the loaded sprite images
-            foreach (Image img in _visible)
+            foreach (Image image in _visible)
             {
-                img.Dispose();
+                image.Dispose();
             }
-            foreach (Image img in _hidden)
+            foreach (Image image in _hidden)
             {
-                img.Dispose();
+                image.Dispose();
             }
             _visible.Clear();
             _hidden.Clear();
@@ -271,7 +315,7 @@ namespace FLER
             for (int i = 0; i < 180; i += INTERVAL)
             {
                 //if past 90 degrees, add each face's sprites to the opposite list
-                flipped = i > 90;
+                _flipped = i > 90;
                 //loads the visible face's image
                 path = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png");
                 try
@@ -282,14 +326,14 @@ namespace FLER
                 catch
                 {
                     //otherwise, generate it and save it
-                    Image img = RotateFace(vbase ??= RenderFace(card.Visible), flipped ? i - 180 : i); //the rendered image
+                    Image image = RotateFace(vbase ??= RenderFace(card.Visible), _flipped ? i - 180 : i); //the rendered image
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    img.Save(path);
-                    Sprites.Add(img);
+                    image.Save(path);
+                    Sprites.Add(image);
                 }
 
                 //repeat above but with the hidden sprite
-                flipped = !flipped;
+                _flipped = !_flipped;
                 //loads the hidden face's image
                 path = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png");
                 try
@@ -300,10 +344,10 @@ namespace FLER
                 catch
                 {
                     //otherwise, generate it and save it
-                    Image img = RotateFace(hbase ??= RenderFace(card.Hidden), flipped ? i : i - 180); //the rendered image
+                    Image image = RotateFace(hbase ??= RenderFace(card.Hidden), _flipped ? i : i - 180); //the rendered image
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    img.Save(path);
-                    Sprites.Add(img);
+                    image.Save(path);
+                    Sprites.Add(image);
                 }
             }
 
@@ -312,105 +356,118 @@ namespace FLER
             hbase?.Dispose();
 
             //resets movement variables
-            going = false;
-            counter = 0;
+            _counter = Sprites.Count;
+            Flip();
 
-            return true; //repaint the control
+            return true; //returns true to repaint the control
         }
+
+        /// <summary>
+        /// Invokes a flip event for the flashcard if it is currently flipping
+        /// </summary>
+        /// <returns>Whether the control requires a paint event</returns>
+        public bool Flip()
+        {
+            bool output = _going; //whether the control needs a repaint
+
+            //if the flashcard is flipping, increment the counter
+            if(_going)
+            {
+                _counter++;
+            }
+
+            //if the counter equals the number of sprites, the flip is finished
+            if (_counter >= Sprites.Count)
+            {
+                //reset movement variables
+                _counter = 0;
+                _flipped = !_flipped;
+                _going = false;
+                Cursor = _mouse ? Cursors.Hand : Cursors.Default;
+            }
+
+            return output; //returns true if the flashcard was flipping to repaint the control
+        }
+
+        /// <summary>
+        /// Determines whether a point falls within
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public bool InBounds(Point parent)
+        {
+            //if the size changed since the last function call, regenerate the flashcard border path
+            if (_size != Size)
+            {
+                _bounds.Reset();
+
+                float WFACTOR = Width / IMGWIDTH; //the width scaling factor
+                float HFACTOR = Height / IMGHEIGHT; //the height scaling factor
+                float WDIAMETER = WFACTOR * Math.Min(DIAMETER, BASEWIDTH); //the constrained width (horizontal) diameter
+                float HDIAMETER = HFACTOR * Math.Min(DIAMETER, BASEHEIGHT); //the constrained height (vertical) diameter
+                float LEFT = WFACTOR * IMGHEIGHT * FACTOR * 0.5f; //the start position of the left corner arcs
+                float RIGHT = WFACTOR * (IMGWIDTH - WDIAMETER) - LEFT; //the start position of the right corner arcs
+                float BOTTOM = HFACTOR * (IMGHEIGHT - HDIAMETER); //the start position of the bottom corner arcs
+
+                //creates the border of the flashcard
+                _bounds.AddArc(LEFT, 0, WDIAMETER, HDIAMETER, 180, 90);
+                _bounds.AddArc(RIGHT, 0, WDIAMETER, HDIAMETER, 270, 90);
+                _bounds.AddArc(RIGHT, BOTTOM, WDIAMETER, HDIAMETER, 0, 90);
+                _bounds.AddArc(LEFT, BOTTOM, WDIAMETER, HDIAMETER, 90, 90);
+                _bounds.CloseFigure();
+
+                //sets the size cache
+                _size = Size;
+            }
+
+            return _bounds.IsVisible(PointToLocal(parent)); //returns whether the point falls within the flashcard border
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events
 
         public override bool Paint(PaintEventArgs e)
         {
-            Region r = e.Graphics.Clip;
+            Region clip = e.Graphics.Clip; //the clip region of the graphics
+
+            //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
             e.Graphics.IntersectClip(Bounds);
-            e.Graphics.DrawImage(Sprites[counter], Bounds);
-            using Pen p = new Pen(Color.Red, 4);
-            if (outline)
-            {
-                inBounds(Point.Empty);
-                e.Graphics.TranslateTransform(Left, Top);
-                e.Graphics.DrawPath(p, boundsPath);
-                e.Graphics.TranslateTransform(-Left, -Top);
-            }
-            e.Graphics.Clip = r;
-            return base.Paint(e);
+            e.Graphics.DrawImage(Sprites[_counter], Bounds);
+            e.Graphics.Clip = clip;
+
+            return base.Paint(e); //returns base method to determine whether to repaint
         }
 
         public override bool Click(EventArgs e)
         {
-            if (outline)
+            //if the mouse is within the bounds, flip the card
+            if (_mouse)
             {
-                going = true;
+                _going = true;
             }
-            base.Click(e);
-            return outline;
-        }
-
-        bool inBounds(Point p)
-        {
-            if (oldSize != Size)
-            {
-                boundsPath.Reset();
-                if (Sprites.Count > 0)
-                {
-                    float WFACTOR = Width / IMGWIDTH;
-                    float HFACTOR = Height / IMGHEIGHT;
-                    float WDIAMETER = WFACTOR * Math.Min(DIAMETER, BASEWIDTH);
-                    float HDIAMETER = HFACTOR * Math.Min(DIAMETER, BASEHEIGHT);
-                    float LEFT = WFACTOR * IMGHEIGHT * FACTOR * 0.5f;
-                    float RIGHT = WFACTOR * (IMGWIDTH - WDIAMETER) - LEFT;
-                    float BOTTOM = HFACTOR * (IMGHEIGHT - HDIAMETER);
-
-                    boundsPath.AddArc(LEFT, 0, WDIAMETER, HDIAMETER, 180, 90);
-                    boundsPath.AddArc(RIGHT, 0, WDIAMETER, HDIAMETER, 270, 90);
-                    boundsPath.AddArc(RIGHT, BOTTOM, WDIAMETER, HDIAMETER, 0, 90);
-                    boundsPath.AddArc(LEFT, BOTTOM, WDIAMETER, HDIAMETER, 90, 90);
-                    boundsPath.CloseFigure();
-
-                    oldSize = Size;
-                }
-                else
-                {
-                    boundsPath.AddRectangle(Bounds);
-                }
-            }
-
-            return boundsPath.IsVisible(p);
+            return base.Click(e); //returns base method to determine whether to repaint
         }
 
         public override bool MouseMove(MouseEventArgs e)
         {
-            bool oldline = outline;
-            mouse = inBounds(e.Location - (Size)Location);
-            outline = !going && mouse;
-            Cursor = outline ? Cursors.Hand : Cursors.Default;
-            base.MouseMove(e);
-            return outline != oldline;
+            //determines whether the mouse is within the bounds
+            _mouse = InBounds(e.Location);
+            Cursor = !_going && _mouse ? Cursors.Hand : Cursors.Default;
+            return base.MouseMove(e); //returns base method to determine whether to repaint
         }
 
         public override bool MouseLeave(EventArgs e)
         {
-            mouse = false;
-            outline = false;
-            base.MouseLeave(e);
-            return true;
+            //the mouse is not within the bounds
+            _mouse = false;
+            Cursor = Cursors.Default;
+            return base.MouseLeave(e); //returns base method to determine whether to repaint
         }
 
-        int c = 0;
-        public bool Flip()
-        {
-            bool output = going;
-            if (going && ++counter >= Sprites.Count)
-            {
-                counter = 0;
-                flipped = !flipped;
-                going = false;
-                if (mouse)
-                {
-                    outline = true;
-                    Cursor = Cursors.Hand;
-                }
-            }
-            return output;
-        }
+        #endregion
+
     }
 }

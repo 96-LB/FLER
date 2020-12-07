@@ -59,6 +59,20 @@ namespace FLER
 
         #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// Computes the location of the specified parent point into local coordinates
+        /// </summary>
+        /// <returns>The specified parent point converted into local coordinates</returns>
+        public Point PointToLocal(Point parent)
+        {
+            return parent - (Size)Location; //translates the parent point by the control's location
+        }
+
+        #endregion
+
+
         #region Events
 
         /// <summary>
@@ -85,7 +99,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's mouse enter event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool MouseEnter(EventArgs e)
         {
             OnMouseEnter?.Invoke(this, e);
@@ -100,7 +115,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's mouse leave event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool MouseLeave(EventArgs e)
         {
             OnMouseLeave?.Invoke(this, e);
@@ -115,7 +131,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's mouse move event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool MouseMove(MouseEventArgs e)
         {
             OnMouseMove?.Invoke(this, e);
@@ -130,7 +147,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's mouse down event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool MouseDown(MouseEventArgs e)
         {
             OnMouseDown?.Invoke(this, e);
@@ -145,7 +163,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's mouse up event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool MouseUp(MouseEventArgs e)
         {
             OnMouseUp?.Invoke(this, e);
@@ -160,7 +179,8 @@ namespace FLER
         /// <summary>
         /// Triggers the control's click event
         /// </summary>
-        /// <param name="e">Whether the control requires a paint event</param>
+        /// <param name="e">The event data</param>
+        /// <returns>Whether the control requires a paint event</returns>
         public virtual bool Click(EventArgs e)
         {
             OnClick?.Invoke(this, e);
