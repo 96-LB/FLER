@@ -147,6 +147,15 @@ namespace FLER
 
         #region Public Instance
 
+        //inherits docstring
+        public override bool InBounds(Point parent)
+        {
+            PointF local = PointToLocal(parent);
+            PointF translated = PointF.Subtract(local, new SizeF(0.5f * FACTOR * HEIGHT / IMGWIDTH * Width, 0));
+            PointF scaled = new PointF(translated.X * IMGWIDTH / WIDTH, translated.Y);
+            return base.InBounds(PointToParent(Point.Round(scaled)));
+        }
+
         /// <summary>
         /// Loads sprites from the given flashcard, rendering any missing ones
         /// </summary>
@@ -154,28 +163,27 @@ namespace FLER
         /// <returns>Whether the control requires a paint event</returns>
         public override bool LoadCard(Flashcard card)
         {
+            //calls the base function to load static sprites
             base.LoadCard(card);
 
             //disposes and clears all of the loaded sprite images
             foreach (Image image in _visible)
             {
-                image.Dispose();
+                image?.Dispose();
             }
             foreach (Image image in _hidden)
             {
-                image.Dispose();
+                image?.Dispose();
             }
             _visible.Clear();
             _hidden.Clear();
-
 
             //generates sprites across a 180 degree rotation, using the specified interval
             for (int i = 0; i < 180; i += INTERVAL)
             {
                 //if past 90 degrees, add each face's sprites to the opposite list
                 _flipped = i > 90;
-                //loads the visible face's image
-                string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png");
+                string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png"); //the visible sprite's stored image path
                 try
                 {
                     //load the stored image if it exists
@@ -199,8 +207,7 @@ namespace FLER
 
                 //repeat above but with the hidden sprite
                 _flipped = !_flipped;
-                //loads the hidden face's image
-                string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png");
+                string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png"); //the hidden sprite's stored image path
                 try
                 {
                     //load the stored image if it exists
@@ -259,21 +266,13 @@ namespace FLER
             return output; //returns true if the flashcard was flipping to repaint the control
         }
 
-        //inherits docstring
-        public override bool InBounds(Point parent)
-        {
-            PointF local = PointToLocal(parent);
-            PointF translated = PointF.Subtract(local, new SizeF(0.5f * FACTOR * HEIGHT / IMGWIDTH * Width, 0));
-            PointF scaled = new PointF(translated.X * IMGWIDTH / WIDTH, translated.Y);
-            return base.InBounds(PointToParent(Point.Round(scaled)));
-        }
-
         #endregion
 
         #endregion
 
         #region Events
 
+        //inherits docstring
         public override void Paint(PaintEventArgs e)
         {
             Region clip = e.Graphics.Clip; //the clip region of the graphics
@@ -284,18 +283,23 @@ namespace FLER
             e.Graphics.Clip = clip;
         }
 
+        //inherits docstring
         public override bool MouseMove(MouseEventArgs e)
         {
-            bool repaint = base.MouseMove(e);
+            bool repaint = base.MouseMove(e); //whether the control needs a repaint
+            
+            //if the control is moving, reset the cursor
             Cursor = _moving ? Cursors.Default : Cursor;
-            return repaint;
+            
+            return repaint; //returns the base method to determine whether to repaint
         }
 
+        //inherits docstring
         public override bool Flip()
         {
-            bool repaint = _moving;
+            //begins flipping
             _moving = true;
-            return repaint;
+            return true; //returns true to repaint the control
         }
 
         #endregion

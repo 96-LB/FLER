@@ -11,10 +11,13 @@ using System.Windows.Forms;
 namespace FLER
 {
     /// <summary>
-    /// Renders a static flashcard
+    /// Renders a static flashcard with no flip animation
     /// </summary>
     class StaticFlashcardControl : FLERControl
     {
+
+        #region Properties
+
         /// <summary>
         /// [Internal] The list of sprites for the currently selected face
         /// </summary>
@@ -33,6 +36,10 @@ namespace FLER
         private Image _hidden;
 
         #endregion
+
+        #endregion
+
+        #region Fields
 
         /// <summary>
         /// [Internal] Whether the flashcard is flipped to show the hidden face
@@ -53,6 +60,8 @@ namespace FLER
         /// [Internal] The flashcard border
         /// </summary>
         private readonly GraphicsPath _bounds = new GraphicsPath();
+
+        #endregion
 
         #region Constants
 
@@ -97,13 +106,16 @@ namespace FLER
 
         #endregion
 
+        #region Methods
+
+        #region Private Static
 
         /// <summary>
         /// Renders a flashcard face onto a bitmap
         /// </summary>
         /// <param name="face">The flashcard face to render</param>
         /// <returns>The base image for a rendered flashcard face</returns>
-        protected static Bitmap RenderFace(Flashcard.Face face)
+        private static Bitmap RenderFace(Flashcard.Face face)
         {
             Bitmap output = new Bitmap(WIDTH, HEIGHT); //the rendered bitmap
 
@@ -183,91 +195,9 @@ namespace FLER
             return output; //returns the rendered bitmap
         }
 
-        /// <summary>
-        /// Loads sprites from the given flashcard, rendering any missing ones
-        /// </summary>
-        /// <param name="card">The flashcard to render and load</param>
-        /// <returns>Whether the control requires a paint event</returns>
-        public virtual bool LoadCard(Flashcard card)
-        {
-            //disposes and clears all of the loaded sprite images
-            _visible?.Dispose();
-            _hidden?.Dispose();
+        #endregion
 
-            string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v.png");
-            try
-            {
-                //load the stored image if it exists
-                _visible = Image.FromFile(vpath);
-            }
-            catch
-            {
-                //otherwise, generate it and save it
-                Image image = RenderFace(card.Visible); //the rendered image
-                Directory.CreateDirectory(Path.GetDirectoryName(vpath));
-                image.Save(vpath);
-                _visible = image;
-            }
-
-            string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h.png");
-            try
-            {
-                //load the stored image if it exists
-                _hidden = Image.FromFile(hpath);
-            }
-            catch
-            {
-                //otherwise, generate it and save it
-                Image image = RenderFace(card.Hidden); //the rendered image
-                Directory.CreateDirectory(Path.GetDirectoryName(hpath));
-                image.Save(hpath);
-                _hidden = image;
-            }
-
-            return true; //returns true to repaint the control
-        }
-
-        public override void Paint(PaintEventArgs e)
-        {
-            Region clip = e.Graphics.Clip; //the clip region of the graphics
-
-            //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
-            e.Graphics.IntersectClip(Bounds);
-            e.Graphics.DrawImage(Sprite, Bounds);
-            e.Graphics.Clip = clip;
-        }
-
-        public override bool MouseMove(MouseEventArgs e)
-        {
-            //determines whether the mouse is within the bounds
-            _mouse = InBounds(e.Location);
-            Cursor = _mouse ? Cursors.Hand : Cursors.Default;
-            return base.MouseMove(e); //returns base method to determine whether to repaint
-        }
-
-        public override bool Click(EventArgs e)
-        {
-            //if the mouse is within the bounds, flip the flashcard
-            if (_mouse)
-            {
-                Flip();
-            }
-            return true; //returns true to repaint the control
-        }
-
-        public override bool MouseLeave(EventArgs e)
-        {
-            //the mouse is not within the bounds
-            _mouse = false;
-            Cursor = Cursors.Default;
-            return base.MouseLeave(e); //returns base method to determine whether to repaint
-        }
-
-        public virtual bool Flip()
-        {
-            _flipped = !_flipped;
-            return true;
-        }
+        #region Public Instance
 
         /// <summary>
         /// Determines whether a point falls within the flashcard border
@@ -301,5 +231,109 @@ namespace FLER
 
             return _bounds.IsVisible(PointToLocal(parent)); //returns whether the point falls within the flashcard border
         }
+
+        /// <summary>
+        /// Loads sprites from the given flashcard, rendering any missing ones
+        /// </summary>
+        /// <param name="card">The flashcard to render and load</param>
+        /// <returns>Whether the control requires a paint event</returns>
+        public virtual bool LoadCard(Flashcard card)
+        {
+            //disposes the loaded sprite images
+            _visible?.Dispose();
+            _hidden?.Dispose();
+
+            string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v.png"); //the visible face's stored image path
+            try
+            {
+                //load the stored image if it exists
+                _visible = Image.FromFile(vpath);
+            }
+            catch
+            {
+                //if there is no stored image, generate it and save it
+                Image image = RenderFace(card.Visible); //the rendered image
+                Directory.CreateDirectory(Path.GetDirectoryName(vpath));
+                image.Save(vpath);
+                _visible = image;
+            }
+
+            string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h.png"); //the hidden face's stored image path
+            try
+            {
+                //load the stored image if it exists
+                _hidden = Image.FromFile(hpath);
+            }
+            catch
+            {
+                //if there is no stored image, generate it and save it
+                Image image = RenderFace(card.Hidden); //the rendered image
+                Directory.CreateDirectory(Path.GetDirectoryName(hpath));
+                image.Save(hpath);
+                _hidden = image;
+            }
+
+            return true; //returns true to repaint the control
+        }
+
+        /// <summary>
+        /// Flips the flashcard
+        /// </summary>
+        /// <returns>Whether the control requires a repaint</returns>
+        public virtual bool Flip()
+        {
+            //flips the flip variable
+            _flipped = !_flipped;
+            return true; //returns true to repaint the control
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events
+
+        //inherited docstring
+        public override void Paint(PaintEventArgs e)
+        {
+            Region clip = e.Graphics.Clip; //the clip region of the graphics
+
+            //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
+            e.Graphics.IntersectClip(Bounds);
+            e.Graphics.DrawImage(Sprite, Bounds);
+            e.Graphics.Clip = clip;
+        }
+
+        //inherited docstring
+        public override bool MouseMove(MouseEventArgs e)
+        {
+            //determines whether the mouse is within the bounds
+            _mouse = InBounds(e.Location);
+            Cursor = _mouse ? Cursors.Hand : Cursors.Default;
+            return base.MouseMove(e); //returns base method to determine whether to repaint
+        }
+
+        //inherited docstring
+        public override bool Click(EventArgs e)
+        {
+            //if the mouse is within the bounds, flip the flashcard
+            if (_mouse)
+            {
+                Flip();
+            }
+            return true; //returns true to repaint the control
+        }
+
+        //inherited docstring
+        public override bool MouseLeave(EventArgs e)
+        {
+            //the mouse is not within the bounds
+            _mouse = false;
+            Cursor = Cursors.Default;
+            return base.MouseLeave(e); //returns base method to determine whether to repaint
+        }
+
+        #endregion
+
     }
 }
