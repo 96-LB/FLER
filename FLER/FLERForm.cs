@@ -219,15 +219,16 @@ namespace FLER
             DrawCard();
         }
 
-        readonly FlashcardControl fc = new FlashcardControl() { Bounds = new Rectangle(100, 100, (int)FlashcardControl.IMGWIDTH, (int)FlashcardControl.IMGHEIGHT) };
+        readonly StaticFlashcardControl fc = new StaticFlashcardControl() { Bounds = new Rectangle(100, 100, (int)StaticFlashcardControl.WIDTH, (int)StaticFlashcardControl.HEIGHT) };
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            /*
             label2.Text = "" + (1 + int.Parse(label2.Text));
-            if (fc.Flip())
+            if (fc.Tick())
             {
                 Invalidate(fc.Bounds);
-            }
+            }*/
         }
 
         List<FLERControl> controls = new List<FLERControl>();
@@ -239,9 +240,9 @@ namespace FLER
 
             foreach (FLERControl f in controls)
             {
-                if (f.Bounds.IntersectsWith(e.ClipRectangle) && f.Paint(e))
+                if (f.Bounds.IntersectsWith(e.ClipRectangle))
                 {
-                    Invalidate(f.Bounds);
+                    f.Paint(e);
                 }
             }
 

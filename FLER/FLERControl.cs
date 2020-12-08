@@ -70,6 +70,15 @@ namespace FLER
             return parent - (Size)Location; //translates the parent point by the control's location
         }
 
+        /// <summary>
+        /// Computes the location of the specified local point into parent coordinates
+        /// </summary>
+        /// <returns>The specified local point converted into parent coordinates</returns>
+        public Point PointToParent(Point local)
+        {
+            return local + (Size)Location; //translates the local point by the control's location
+        }
+
         #endregion
 
 
@@ -84,11 +93,9 @@ namespace FLER
         /// Triggers the control's paint event
         /// </summary>
         /// <param name="e">The event data</param>
-        /// <returns>Whether the control requires another paint event</returns>
-        public virtual bool Paint(PaintEventArgs e)
+        public virtual void Paint(PaintEventArgs e)
         {
             OnPaint?.Invoke(this, e);
-            return false;
         }
 
         /// <summary>
