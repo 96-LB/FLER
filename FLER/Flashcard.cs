@@ -28,6 +28,11 @@ namespace FLER
             public Color BackColor { get; set; }
 
             /// <summary>
+            /// The color used to fill the outline
+            /// </summary>
+            public Color LineColor { get; set; }
+
+            /// <summary>
             /// The bounds of the text box
             /// </summary>
             public Rectangle TextBox { get; set; }
@@ -50,7 +55,7 @@ namespace FLER
             /// <summary>
             /// The color of the text in the textbox
             /// </summary>
-            public Color ForeColor { get; set; }
+            public Color TextColor { get; set; }
 
             /// <summary>
             /// The bounds of the image box

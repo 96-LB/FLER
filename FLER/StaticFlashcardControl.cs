@@ -121,9 +121,9 @@ namespace FLER
 
             using Graphics graphics = Graphics.FromImage(output); //the graphics with which to draw on the bitmap
             using GraphicsPath path = new GraphicsPath(); //the border of the flashcard
-            using Brush backColor = new SolidBrush(face.BackColor); //the brush used to color the background of the flashcard
-            using Brush foreColor = new SolidBrush(face.ForeColor); //the brush used to color the text of the flashcard
-            using Pen forePen = new Pen(face.ForeColor, OUTLINE); //the pen used to color the border of the flashcard
+            using Brush backBrush = new SolidBrush(face.BackColor); //the brush used to color the background of the flashcard
+            using Brush textBrush = new SolidBrush(face.TextColor); //the brush used to color the text of the flashcard
+            using Pen borderPen = new Pen(face.LineColor, OUTLINE); //the pen used to color the border of the flashcard
 
             int WDIAMETER = Math.Min(DIAMETER, WIDTH - OUTLINE); //the constrained width (horizontal) diameter
             int HDIAMETER = Math.Min(DIAMETER, HEIGHT - OUTLINE); //the constrained height (vertical) diameter
@@ -138,7 +138,7 @@ namespace FLER
             path.CloseFigure();
 
             //fills the flashcard area
-            graphics.FillPath(backColor, path);
+            graphics.FillPath(backBrush, path);
 
             //draws the text in the face's text box
             void _renderText()
@@ -148,7 +148,7 @@ namespace FLER
                 graphics.IntersectClip(face.TextBox);
 
                 //renders the text with the specified options
-                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, foreColor, face.TextBox, face.TextFormat);
+                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, textBrush, face.TextBox, face.TextFormat);
             }
 
             //draws the image in the face's image box
@@ -190,7 +190,7 @@ namespace FLER
 
             //draw the flashcard border
             graphics.ResetClip();
-            graphics.DrawPath(forePen, path);
+            graphics.DrawPath(borderPen, path);
 
             return output; //returns the rendered bitmap
         }

@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorControl.cs" />
     <Compile Include="DynamicFlashcardControl.cs" />
     <Compile Include="Flashcard.cs" />
     <Compile Include="FLERControl.cs" />

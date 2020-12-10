@@ -72,8 +72,8 @@ namespace FLER
             {
                 Filename = "phil.fler",
                 Tags = new string[] { "phil" },
-                Hidden = new Flashcard.Face() { ForeColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
-                Visible = new Flashcard.Face() { Text = "so, phil, is it?", ForeColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
+                Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
+                Visible = new Flashcard.Face() { Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
             };
             f.Save();
             //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
@@ -81,8 +81,8 @@ namespace FLER
             {
                 Filename = "ff.fler",
                 Tags = new string[] { "first" },
-                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, ForeColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
-                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, ForeColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
+                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
+                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("phil.fler", out f);
