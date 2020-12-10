@@ -255,12 +255,10 @@ namespace FLER
         public void Save(string filename)
         {
             string json = JsonConvert.SerializeObject(this); //serializes the flashcard in json format
-
-            //navigates to the card directory
-            filename = Path.Combine(FLERForm.CARD_DIR, filename);
+            string path = Path.Combine(FLERForm.CARD_DIR, filename); //navigates to the the card directory
 
             //create a new file...
-            using (FileStream file = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = File.Open(path, FileMode.Create, FileAccess.ReadWrite))
             {
                 using GZipStream deflate = new GZipStream(file, CompressionMode.Compress); //a gzip compression stream
                 using StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8); //a text reader
@@ -270,10 +268,17 @@ namespace FLER
             }
 
             //reopen the file to update its length property
-            using (FileStream file = File.Open(filename, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream file = File.Open(path, FileMode.Open, FileAccess.ReadWrite))
             {
                 //append the checksum
                 file.Write(Checksum(file), 0, 12);
+            }
+
+            //deletes the image directory if it exists
+            path = Path.Combine(FLERForm.IMG_DIR, filename);
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
             }
         }
 
