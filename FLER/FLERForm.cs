@@ -51,7 +51,6 @@ namespace FLER
 
         #endregion
 
-
         #region Constructor
 
         public FLERForm()
@@ -63,37 +62,6 @@ namespace FLER
             TESTCODE();
             /// TEST CODE
         }
-
-        /// TEST CODE
-        void TESTCODE()
-        {
-
-            var f = new Flashcard()
-            {
-                Filename = "phil.fler",
-                Tags = new string[] { "phil" },
-                Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
-                Visible = new Flashcard.Face() { Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
-            };
-            f.Save();
-            //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
-            f = new Flashcard()
-            {
-                Filename = "ff.fler",
-                Tags = new string[] { "first" },
-                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
-                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
-            };
-            //f.Save("ff.fler");
-            Flashcard.TryLoad("phil.fler", out f);
-            if (fc.LoadCard(f))
-            {
-                Invalidate();
-            }
-            controls.Add(fc);
-        }
-        /// TEST CODE
-
         #endregion
 
         #region Methods
@@ -214,13 +182,45 @@ namespace FLER
         ///TEST CODE
         #region TEST CODE
 
+        /// TEST CODE
+        void TESTCODE()
+        {
+
+            var f = new Flashcard()
+            {
+                Filename = "phil.fler",
+                Tags = new string[] { "phil" },
+                Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
+                Visible = new Flashcard.Face() { Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
+            };
+            f.Save();
+            //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
+            f = new Flashcard()
+            {
+                Filename = "ff.fler",
+                Tags = new string[] { "first" },
+                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
+                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
+            };
+            //f.Save("ff.fler");
+            Flashcard.TryLoad("phil.fler", out f);
+            if (fc.LoadCard(f))
+            {
+                Invalidate();
+            }
+            controls.Add(fc);
+            controls.Add(cc);
+        }
+        /// TEST CODE
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             DrawCard();
         }
 
         readonly DynamicFlashcardControl fc = new DynamicFlashcardControl() { Bounds = new Rectangle(200, 100, (int)DynamicFlashcardControl.IMGWIDTH, (int)DynamicFlashcardControl.IMGHEIGHT) };
-
+        readonly ColorControl cc = new ColorControl(Color.Red) { Bounds = new Rectangle(50, 50, 50, 50) };
         private void timer1_Tick(object sender, EventArgs e)
         {
             label2.Text = "" + (1 + int.Parse(label2.Text));

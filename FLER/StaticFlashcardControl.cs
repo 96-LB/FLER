@@ -304,9 +304,9 @@ namespace FLER
             //call base method to trigger events
             base.Paint(e);
 
-            Region clip = e.Graphics.Clip; //the clip region of the graphics
+            using Region clip = e.Graphics.Clip; //the clip region of the graphics
 
-            //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
+            //sets the clip to the bounds, draws the currently selected sprite, and resets the clip
             e.Graphics.IntersectClip(Bounds);
             e.Graphics.DrawImage(ToPaint, Bounds);
             e.Graphics.Clip = clip;
