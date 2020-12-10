@@ -38,6 +38,9 @@ namespace FLER
 
         #endregion
 
+        //inherited docstring
+        protected override Image ToPaint { get => Sprites[_counter]; }
+
         #endregion
 
         #region Fields
@@ -271,17 +274,6 @@ namespace FLER
         #endregion
 
         #region Events
-
-        //inherits docstring
-        public override void Paint(PaintEventArgs e)
-        {
-            Region clip = e.Graphics.Clip; //the clip region of the graphics
-
-            //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
-            e.Graphics.IntersectClip(Bounds);
-            e.Graphics.DrawImage(Sprites[_counter], Bounds);
-            e.Graphics.Clip = clip;
-        }
 
         //inherits docstring
         public override bool MouseMove(MouseEventArgs e)

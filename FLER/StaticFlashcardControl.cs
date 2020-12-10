@@ -37,6 +37,11 @@ namespace FLER
 
         #endregion
 
+        /// <summary>
+        /// [Internal] The sprite to draw on next paint
+        /// </summary>
+        protected virtual Image ToPaint { get => Sprite; }
+
         #endregion
 
         #region Fields
@@ -296,26 +301,34 @@ namespace FLER
         //inherited docstring
         public override void Paint(PaintEventArgs e)
         {
+            //call base method to trigger events
+            base.Paint(e);
+
             Region clip = e.Graphics.Clip; //the clip region of the graphics
 
             //sets the clip to the bounds, draws the currently selected sprite, and resets ths clip
             e.Graphics.IntersectClip(Bounds);
-            e.Graphics.DrawImage(Sprite, Bounds);
+            e.Graphics.DrawImage(ToPaint, Bounds);
             e.Graphics.Clip = clip;
         }
 
         //inherited docstring
         public override bool MouseMove(MouseEventArgs e)
         {
+            bool repaint = base.MouseMove(e); //call base method to trigger events
+
             //determines whether the mouse is within the bounds
             _mouse = InBounds(e.Location);
             Cursor = _mouse ? Cursors.Hand : Cursors.Default;
-            return base.MouseMove(e); //returns base method to determine whether to repaint
+            return repaint; //returns base method to determine whether to repaint
         }
 
         //inherited docstring
         public override bool Click(EventArgs e)
         {
+            //call base method to trigger events
+            base.Click(e);
+
             //if the mouse is within the bounds, flip the flashcard
             if (_mouse)
             {
@@ -327,10 +340,12 @@ namespace FLER
         //inherited docstring
         public override bool MouseLeave(EventArgs e)
         {
+            bool repaint = base.MouseLeave(e); //call base method to trigger events
+
             //the mouse is not within the bounds
             _mouse = false;
             Cursor = Cursors.Default;
-            return base.MouseLeave(e); //returns base method to determine whether to repaint
+            return repaint; //returns base method to determine whether to repaint
         }
 
         #endregion
