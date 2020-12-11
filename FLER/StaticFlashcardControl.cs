@@ -116,6 +116,24 @@ namespace FLER
         #region Private Static
 
         /// <summary>
+        /// Creates a high-quality graphics object from the specified bitmap
+        /// </summary>
+        /// <param name="bmp">The bitmap from which to create the graphics object</param>
+        /// <returns>A high-quality graphics object initialized from the bitmap</returns>
+        protected static Graphics QualityGraphics(Bitmap bmp)
+        {
+            Graphics graphics = Graphics.FromImage(bmp); //graphics initialized from the bitmap
+
+            //sets all the options on the graphics to high-quality
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+
+            return graphics; //returns the initialized graphics
+        }
+
+        /// <summary>
         /// Renders a flashcard face onto a bitmap
         /// </summary>
         /// <param name="face">The flashcard face to render</param>
@@ -124,12 +142,12 @@ namespace FLER
         {
             Bitmap output = new Bitmap(WIDTH, HEIGHT); //the rendered bitmap
 
-            using Graphics graphics = Graphics.FromImage(output); //the graphics with which to draw on the bitmap
+            using Graphics graphics = QualityGraphics(output); //the graphics with which to draw on the bitmap
             using GraphicsPath path = new GraphicsPath(); //the border of the flashcard
             using Brush backBrush = new SolidBrush(face.BackColor); //the brush used to color the background of the flashcard
             using Brush textBrush = new SolidBrush(face.TextColor); //the brush used to color the text of the flashcard
             using Pen borderPen = new Pen(face.LineColor, OUTLINE); //the pen used to color the border of the flashcard
-
+            
             int WDIAMETER = Math.Min(DIAMETER, WIDTH - OUTLINE); //the constrained width (horizontal) diameter
             int HDIAMETER = Math.Min(DIAMETER, HEIGHT - OUTLINE); //the constrained height (vertical) diameter
             int RIGHT = WIDTH - WDIAMETER - OUT; //the start position of the right corner arcs

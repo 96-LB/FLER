@@ -86,24 +86,6 @@ namespace FLER
         #region Private Static
 
         /// <summary>
-        /// Creates a high-quality graphics object from the specified bitmap
-        /// </summary>
-        /// <param name="bmp">The bitmap from which to create the graphics object</param>
-        /// <returns>A high-quality graphics object initialized from the bitmap</returns>
-        private static Graphics QualityGraphics(Bitmap bmp)
-        {
-            Graphics graphics = Graphics.FromImage(bmp); //graphics initialized from the bitmap
-
-            //sets all the options on the graphics to high-quality
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-
-            return graphics; //returns the initialized graphics
-        }
-
-        /// <summary>
         /// Psuedo-rotates the specified image on the Z-axis by the specified amount
         /// </summary>
         /// <param name="image">The image to rotate</param>
