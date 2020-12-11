@@ -19,7 +19,7 @@ namespace FLER
         /// <summary>
         /// The color stored by the control
         /// </summary>
-        public Color Color { get; private set; }
+        public Color Color { get; set; }
 
         #endregion
 

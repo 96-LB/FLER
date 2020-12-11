@@ -193,7 +193,7 @@ namespace FLER
                 Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
                 Visible = new Flashcard.Face() { Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
             };
-            f.Save();
+            //f.Save();
             //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
             f = new Flashcard()
             {
@@ -210,6 +210,10 @@ namespace FLER
             }
             controls.Add(fc);
             controls.Add(cc);
+
+            //sets the initial size of the text box to the flashcard size
+            numericUpDown3.Value = StaticFlashcardControl.WIDTH;
+            numericUpDown4.Value = StaticFlashcardControl.HEIGHT;
         }
         /// TEST CODE
 
@@ -329,6 +333,52 @@ namespace FLER
                 Invalidate(hover.Bounds);
             }
             hover = null;
+        }
+
+        static readonly ColorDialog colorDialog = new ColorDialog() { SolidColorOnly = true, FullOpen = true };
+        private void PickColor(object sender, EventArgs e)
+        {
+            //if the user clicked ok, set the control's color
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                ((Panel)sender).BackColor = colorDialog.Color;
+            }
+        }
+
+        static readonly string extension = string.Join(";", ImageCodecInfo.GetImageEncoders().Select(x => x.FilenameExtension)); //the list of valid extensions
+        static readonly OpenFileDialog fileDialog = new OpenFileDialog()
+        {
+            Filter = $"Image files ({extension.ToLower().Replace(";", ", ")})|{extension}"
+        }; //a dialog to choose an image
+
+        private void PickImage(object sender, EventArgs e)
+        {
+            //if the user clicked ok, try to set the control's image
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    //try to read an image from the specified filepath
+                    ((PictureBox)sender).Image = Image.FromFile(fileDialog.FileName);
+                }
+                catch
+                {
+                    //if it fails, the path is invalid
+                    MessageBox.Show("The selected file is not a valid image.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        static readonly FontDialog fontDialog = new FontDialog();
+        private void PickFont(object sender, EventArgs e)
+        {
+            //if the user clicked ok, set the control's font
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                using Font font = new Font(fontDialog.Font.FontFamily, 8, fontDialog.Font.Style); //copies and resizes the font
+                ((Label)sender).Text = $"{font.FontFamily.Name}, {Math.Round(fontDialog.Font.Size)}pt, {font.Style}";
+                ((Label)sender).Font = font;
+            }
         }
 
         #endregion
