@@ -105,7 +105,7 @@ namespace FLER
         /// <summary>
         /// The default font to use when none is specified
         /// </summary>
-        public static Font FONT_DEF { get; } = new Font("Arial", 18);
+        public static Font FONT_DEF { get; } = new Font("Arial", 24);
 
         #endregion
 

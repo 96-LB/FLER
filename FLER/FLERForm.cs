@@ -295,12 +295,12 @@ namespace FLER
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("phil.fler", out f);
-            if (fc.LoadCard(f))
+            building.Filename = "test.fler";
+            if (fc.LoadCard(building))
             {
                 Invalidate();
             }
             controls.Add(fc);
-            controls.Add(cc);
 
             //sets the initial size of the text box to the flashcard size
             numericUpDown3.Value = StaticFlashcardControl.WIDTH;
@@ -309,13 +309,16 @@ namespace FLER
         /// TEST CODE
 
 
+        private Flashcard building = Flashcard.Default;
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             DrawCard();
         }
 
-        readonly DynamicFlashcardControl fc = new DynamicFlashcardControl() { Bounds = new Rectangle(200, 100, (int)DynamicFlashcardControl.IMGWIDTH, (int)DynamicFlashcardControl.IMGHEIGHT) };
-        readonly ColorControl cc = new ColorControl(Color.Red) { Bounds = new Rectangle(50, 50, 50, 50) };
+        readonly DynamicFlashcardControl fc = new DynamicFlashcardControl() { Bounds = new Rectangle(200, 100, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
             label2.Text = "" + (1 + int.Parse(label2.Text));
