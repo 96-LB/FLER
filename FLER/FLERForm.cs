@@ -369,22 +369,23 @@ namespace FLER
             }
         }
 
-        static readonly FontDialog fontDialog = new FontDialog();
+        static readonly FontDialog fontDialog = new FontDialog() { AllowScriptChange = false };
         private void PickFont(object sender, EventArgs e)
         {
-            //if the user clicked ok, set the control's font
+            Label label = sender as Label; //the label which fired this event
+
+            //replaces the font dialog's font
+            fontDialog.Font = new Font(label.Font.Name, float.Parse((string)label.Tag), label.Font.Style);
+
+            //if the user clicked ok, set the label's font
             if (fontDialog.ShowDialog() == DialogResult.OK)
             {
-                Label label = sender as Label; //the label which fired this event
-                
-                //disposes the old font
-                label.Font.Dispose();
+                Font font = new Font(fontDialog.Font.Name, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
 
-                //adds the new font and sets the visualization
-                Font font = new Font(fontDialog.Font.FontFamily, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
-                label.Text = $"{font.FontFamily.Name}, {Math.Round(fontDialog.Font.Size)}pt";
+                //replaces the label's font
+                label.Text = $"{font.Name}, {Math.Round(fontDialog.Font.Size)}pt";
                 label.Font = font;
-                label.Tag = fontDialog.Font.Size;
+                label.Tag = fontDialog.Font.Size.ToString();
             }
         }
 

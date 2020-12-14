@@ -52,7 +52,7 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label13 = new System.Windows.Forms.Label();
+            this.lbl_font = new System.Windows.Forms.Label();
             this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
@@ -171,6 +171,8 @@
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(14, 13);
             this.radioButton1.TabIndex = 18;
+            this.radioButton1.Tag = "TopLeft";
+            this.radioButton1.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
             // radioButton5
@@ -180,6 +182,7 @@
             this.radioButton5.Name = "radioButton5";
             this.radioButton5.Size = new System.Drawing.Size(14, 13);
             this.radioButton5.TabIndex = 19;
+            this.radioButton5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.radioButton5.UseVisualStyleBackColor = true;
             // 
             // radioButton6
@@ -189,6 +192,7 @@
             this.radioButton6.Name = "radioButton6";
             this.radioButton6.Size = new System.Drawing.Size(14, 13);
             this.radioButton6.TabIndex = 18;
+            this.radioButton6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.radioButton6.UseVisualStyleBackColor = true;
             // 
             // checkBox2
@@ -214,7 +218,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel1.Controls.Add(this.label13);
+            this.panel1.Controls.Add(this.lbl_font);
             this.panel1.Controls.Add(label12);
             this.panel1.Controls.Add(this.numericUpDown5);
             this.panel1.Controls.Add(label8);
@@ -253,21 +257,21 @@
             this.panel1.Size = new System.Drawing.Size(296, 378);
             this.panel1.TabIndex = 5;
             // 
-            // label13
+            // lbl_font
             // 
-            this.label13.BackColor = System.Drawing.SystemColors.Control;
-            this.label13.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label13.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold);
-            this.label13.Location = new System.Drawing.Point(24, 199);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(109, 41);
-            this.label13.TabIndex = 46;
-            this.label13.Tag = "24";
-            this.label13.Text = "Arial, 24pt, Bold";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label13.UseCompatibleTextRendering = true;
-            this.label13.Click += new System.EventHandler(this.PickFont);
+            this.lbl_font.BackColor = System.Drawing.SystemColors.Control;
+            this.lbl_font.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbl_font.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lbl_font.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lbl_font.Location = new System.Drawing.Point(24, 199);
+            this.lbl_font.Name = "lbl_font";
+            this.lbl_font.Size = new System.Drawing.Size(109, 41);
+            this.lbl_font.TabIndex = 46;
+            this.lbl_font.Tag = "24";
+            this.lbl_font.Text = "Arial, 24pt, Bold";
+            this.lbl_font.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbl_font.UseCompatibleTextRendering = true;
+            this.lbl_font.Click += new System.EventHandler(this.PickFont);
             // 
             // label12
             // 
@@ -401,6 +405,7 @@
             this.radioButton7.Name = "radioButton7";
             this.radioButton7.Size = new System.Drawing.Size(14, 13);
             this.radioButton7.TabIndex = 35;
+            this.radioButton7.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.radioButton7.UseVisualStyleBackColor = true;
             // 
             // radioButton8
@@ -412,6 +417,7 @@
             this.radioButton8.Size = new System.Drawing.Size(14, 13);
             this.radioButton8.TabIndex = 34;
             this.radioButton8.TabStop = true;
+            this.radioButton8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.radioButton8.UseVisualStyleBackColor = true;
             // 
             // radioButton9
@@ -421,11 +427,14 @@
             this.radioButton9.Name = "radioButton9";
             this.radioButton9.Size = new System.Drawing.Size(14, 13);
             this.radioButton9.TabIndex = 33;
+            this.radioButton9.Tag = "";
+            this.radioButton9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.radioButton9.UseVisualStyleBackColor = true;
             // 
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
+            this.radioButton4.CheckAlign = System.Drawing.ContentAlignment.BottomRight;
             this.radioButton4.Location = new System.Drawing.Point(215, 227);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(14, 13);
@@ -460,6 +469,7 @@
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(14, 13);
             this.radioButton3.TabIndex = 20;
+            this.radioButton3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.radioButton3.UseVisualStyleBackColor = true;
             // 
             // numericUpDown1
@@ -635,7 +645,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown8;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label lbl_font;
     }
 }
 
