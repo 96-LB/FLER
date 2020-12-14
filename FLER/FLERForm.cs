@@ -376,7 +376,12 @@ namespace FLER
             if (fontDialog.ShowDialog() == DialogResult.OK)
             {
                 Label label = sender as Label; //the label which fired this event
-                using Font font = new Font(fontDialog.Font.FontFamily, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
+                
+                //disposes the old font
+                label.Font.Dispose();
+
+                //adds the new font and sets the visualization
+                Font font = new Font(fontDialog.Font.FontFamily, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
                 label.Text = $"{font.FontFamily.Name}, {Math.Round(fontDialog.Font.Size)}pt";
                 label.Font = font;
                 label.Tag = fontDialog.Font.Size;
