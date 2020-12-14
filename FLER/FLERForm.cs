@@ -175,7 +175,98 @@ namespace FLER
 
         #region Events
 
-        //no final events :(
+        #region PickColor
+
+        /// <summary>
+        /// A dialog with which to choose a color
+        /// </summary>
+        static private readonly ColorDialog _colorDialog = new ColorDialog() { SolidColorOnly = true, FullOpen = true };
+
+        /// <summary>
+        /// Opens a dialog to choose a color
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
+        private void PickColor(object sender, EventArgs e)
+        {
+            //if the user clicked ok, set the control's color
+            if (_colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                ((Panel)sender).BackColor = _colorDialog.Color;
+            }
+        }
+
+        #endregion
+
+        #region PickImage
+
+        /// <summary>
+        /// A string representing the list of valid image file extensions
+        /// </summary>
+        static private readonly string _extension = string.Join(";", ImageCodecInfo.GetImageEncoders().Select(x => x.FilenameExtension));
+
+        /// <summary>
+        /// A dialog with which to choose an image file
+        /// </summary>
+        static private readonly OpenFileDialog _fileDialog = new OpenFileDialog()
+        {
+            Filter = $"Image files ({_extension.ToLower().Replace(";", ", ")})|{_extension}"
+        };
+
+        /// <summary>
+        /// Opens a dialog to choose an image file
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
+        private void PickImage(object sender, EventArgs e)
+        {
+            //if the user clicked ok, try to set the control's image
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    //try to read an image from the specified filepath
+                    ((PictureBox)sender).Image = Image.FromFile(_fileDialog.FileName);
+                }
+                catch
+                {
+                    //if it fails, the path is invalid
+                    MessageBox.Show("The selected file is not a valid image.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        #endregion
+
+        #region PickFont
+
+        /// <summary>
+        /// A dialog with which to choose a font
+        /// </summary>
+        static private readonly FontDialog _fontDialog = new FontDialog() { AllowScriptChange = false };
+
+        /// <summary>
+        /// Opens a dialog to choose a font
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
+        private void PickFont(object sender, EventArgs e)
+        {
+            Label label = sender as Label; //the label which fired this event
+
+            //if the user clicked ok, set the label's font
+            if (_fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                Font font = new Font(_fontDialog.Font.Name, label.Font.Size, _fontDialog.Font.Style); //copies and resizes the font
+
+                //replaces the label's font
+                label.Text = $"{font.Name}, {Math.Round(_fontDialog.Font.Size)}pt";
+                label.Font = font;
+                label.Tag = _fontDialog.Font.Size.ToString();
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -333,60 +424,6 @@ namespace FLER
                 Invalidate(hover.Bounds);
             }
             hover = null;
-        }
-
-        static readonly ColorDialog colorDialog = new ColorDialog() { SolidColorOnly = true, FullOpen = true };
-        private void PickColor(object sender, EventArgs e)
-        {
-            //if the user clicked ok, set the control's color
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                ((Panel)sender).BackColor = colorDialog.Color;
-            }
-        }
-
-        static readonly string extension = string.Join(";", ImageCodecInfo.GetImageEncoders().Select(x => x.FilenameExtension)); //the list of valid extensions
-        static readonly OpenFileDialog fileDialog = new OpenFileDialog()
-        {
-            Filter = $"Image files ({extension.ToLower().Replace(";", ", ")})|{extension}"
-        }; //a dialog to choose an image
-
-        private void PickImage(object sender, EventArgs e)
-        {
-            //if the user clicked ok, try to set the control's image
-            if (fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    //try to read an image from the specified filepath
-                    ((PictureBox)sender).Image = Image.FromFile(fileDialog.FileName);
-                }
-                catch
-                {
-                    //if it fails, the path is invalid
-                    MessageBox.Show("The selected file is not a valid image.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        static readonly FontDialog fontDialog = new FontDialog() { AllowScriptChange = false };
-        private void PickFont(object sender, EventArgs e)
-        {
-            Label label = sender as Label; //the label which fired this event
-
-            //replaces the font dialog's font
-            fontDialog.Font = new Font(label.Font.Name, float.Parse((string)label.Tag), label.Font.Style);
-
-            //if the user clicked ok, set the label's font
-            if (fontDialog.ShowDialog() == DialogResult.OK)
-            {
-                Font font = new Font(fontDialog.Font.Name, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
-
-                //replaces the label's font
-                label.Text = $"{font.Name}, {Math.Round(fontDialog.Font.Size)}pt";
-                label.Font = font;
-                label.Tag = fontDialog.Font.Size.ToString();
-            }
         }
 
         #endregion
