@@ -77,9 +77,42 @@ namespace FLER
 
         #region Properties
 
+        #region Public Static
+
         /// <summary>
-        /// The file from which the flashcard was loaded
+        /// A default flashcard
         /// </summary>
+        public static Flashcard Default => new Flashcard()
+        {
+            Visible = new Face()
+            {
+                BackColor = Color.LightGray,
+                LineColor = Color.Gray,
+                Text = "Visible",
+                TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT),
+                TextColor = Color.Black,
+                TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center },
+                Font = StaticFlashcardControl.FONT_DEF,
+            },
+            Hidden = new Face()
+            {
+                BackColor = Color.LightGray,
+                LineColor = Color.Gray,
+                Text = "Hidden",
+                TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT),
+                TextColor = Color.Black,
+                TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center },
+                Font = StaticFlashcardControl.FONT_DEF,
+            }
+        };
+
+        #endregion
+
+            #region Public Instance
+
+            /// <summary>
+            /// The file from which the flashcard was loaded
+            /// </summary>
         public string Filename { get; set; }
 
         /// <summary>
@@ -106,6 +139,8 @@ namespace FLER
         /// The hidden face of the flashcard, displaying the answer
         /// </summary>
         public Face Hidden { get; set; }
+
+        #endregion
 
         #endregion
 
@@ -210,7 +245,7 @@ namespace FLER
             }
 
             using MemoryStream copy = new MemoryStream(); //a copy of the data without the 96-checksum
-            
+
             //cuts off the last 96 bits
             stream.Position = 0;
             stream.CopyTo(copy, (int)stream.Length - 12);
@@ -218,7 +253,7 @@ namespace FLER
 
             using GZipStream deflate = new GZipStream(copy, CompressionMode.Decompress); //a gzip decompression stream
             using StreamReader sr = new StreamReader(deflate, Encoding.UTF8); //a string reader to get the json data
-            
+
             try
             {
                 //parse the json data and set the output
@@ -231,7 +266,7 @@ namespace FLER
                 }
 
                 //sets the filename from which the flashcard was loaded
-                card.Filename = filename; 
+                card.Filename = filename;
 
                 return card != null; //returns whether the load was successful
             }
@@ -267,7 +302,7 @@ namespace FLER
             {
                 using GZipStream deflate = new GZipStream(file, CompressionMode.Compress); //a gzip compression stream
                 using StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8); //a text reader
-                
+
                 //write the json as a string
                 sw.Write(json);
             }
