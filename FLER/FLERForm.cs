@@ -193,7 +193,7 @@ namespace FLER
                 Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
                 Visible = new Flashcard.Face() { LineColor = Color.DarkGray, Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
             };
-            f.Save();
+            //f.Save();
             //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
             f = new Flashcard()
             {
@@ -375,9 +375,11 @@ namespace FLER
             //if the user clicked ok, set the control's font
             if (fontDialog.ShowDialog() == DialogResult.OK)
             {
-                using Font font = new Font(fontDialog.Font.FontFamily, 8, fontDialog.Font.Style); //copies and resizes the font
-                ((Label)sender).Text = $"{font.FontFamily.Name}, {Math.Round(fontDialog.Font.Size)}pt, {font.Style}";
-                ((Label)sender).Font = font;
+                Label label = sender as Label; //the label which fired this event
+                using Font font = new Font(fontDialog.Font.FontFamily, label.Font.Size, fontDialog.Font.Style); //copies and resizes the font
+                label.Text = $"{font.FontFamily.Name}, {Math.Round(fontDialog.Font.Size)}pt";
+                label.Font = font;
+                label.Tag = fontDialog.Font.Size;
             }
         }
 
