@@ -258,12 +258,11 @@ namespace FLER
             //if the user clicked ok, set the label's font
             if (_fontDialog.ShowDialog() == DialogResult.OK)
             {
-                Font font = new Font(_fontDialog.Font.Name, label.Font.Size, _fontDialog.Font.Style); //copies and resizes the font
-
-                //replaces the label's font
-                label.Text = $"{font.Name}, {Math.Round(_fontDialog.Font.Size)}pt";
-                label.Font = font;
-                label.Tag = _fontDialog.Font.Size.ToString();
+                //updates reversely by changing the card's font first and using that to update the control
+                (sfc_builder.Flipped ? building.Hidden : building.Visible).Font = _fontDialog.Font;
+                sfc_builder.LoadCard(building);
+                UpdateBuilderControls(null, null);
+                Invalidate();
             }
         }
 
@@ -283,7 +282,7 @@ namespace FLER
                 Filename = "phil.fler",
                 Tags = new string[] { "phil" },
                 Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
-                Visible = new Flashcard.Face() { LineColor = Color.DarkGray, Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
+                Visible = new Flashcard.Face() { LineColor = Color.DarkGray, Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextAlign = ContentAlignment.MiddleCenter, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
             };
             //f.Save();
             //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
@@ -291,21 +290,20 @@ namespace FLER
             {
                 Filename = "ff.fler",
                 Tags = new string[] { "first" },
-                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } },
-                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center } }
+                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextAlign = ContentAlignment.MiddleCenter },
+                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextAlign = ContentAlignment.MiddleCenter }
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("phil.fler", out f);
-            building.Filename = "test.fler";
             if (sfc_builder.LoadCard(building))
             {
                 Invalidate();
             }
             controls.Add(sfc_builder);
-
+            sfc_builder.OnClick += UpdateBuilderControls;
             //sets the initial size of the text box to the flashcard size
-            numericUpDown3.Value = StaticFlashcardControl.WIDTH;
-            numericUpDown4.Value = StaticFlashcardControl.HEIGHT;
+            num_txt_width.Value = StaticFlashcardControl.WIDTH;
+            num_txt_height.Value = StaticFlashcardControl.HEIGHT;
         }
         /// TEST CODE
 
@@ -319,7 +317,7 @@ namespace FLER
         }
 
         readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 100, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
-        
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             //label2.Text = "" + (1 + int.Parse(label2.Text));
@@ -329,18 +327,53 @@ namespace FLER
             //}
         }
 
-        
+
         private void BuildNewCard()
         {
-            sfc_builder.LoadCard(Flashcard.Default);
-
+            building = Flashcard.Default;
+            sfc_builder.LoadCard(building);
+            UpdateBuilderControls(null, null);
+            Invalidate();
         }
 
         private void UpdateBuilderControls(object sender, EventArgs e)
         {
-            Flashcard.Face face = sfc_builder.Flipped ? building.Hidden : building.Visible
+            txt_filename.Text = building.Filename;
+            txt_tags.Text = string.Join(" ", building.Tags ?? new string[0]);
+            Flashcard.Face face = sfc_builder.Flipped != (sender == sfc_builder)? building.Hidden : building.Visible;
+            pnl_backcolor.BackColor = face.BackColor;
+            pnl_linecolor.BackColor = face.LineColor;
+            try
+            {
+                img_img.Image?.Dispose();
+                img_img.Image = Image.FromFile(face.ImagePath);
+            }
+            catch
+            {
+                img_img.Image = Properties.Resources.Missing;
+            }
+            num_img_left.Value = face.ImageBox.Left;
+            num_img_top.Value = face.ImageBox.Top;
+            num_img_width.Value = face.ImageBox.Width;
+            num_img_height.Value = face.ImageBox.Height;
+            check_drawover.Checked = face.ImageTop;
+            lbl_font.Text = $"{face.Font.Name}, {Math.Round(face.Font.Size)}pt";
+            lbl_font.Font = new Font(face.Font.FontFamily, lbl_font.Font.Size);
+            _fontDialog.Font = face.Font;
+            txt_text.Text = face.Text;
+            pnl_txt_color.BackColor = face.TextColor;
+            num_txt_left.Value = face.TextBox.Left;
+            num_txt_top.Value = face.TextBox.Top;
+            num_txt_width.Value = face.TextBox.Width;
+            num_txt_height.Value = face.TextBox.Height;
+            foreach (Control control in pnl_builder.Controls)
+            {
+                if (control is RadioButton radio)
+                {
+                    radio.Checked = radio.TextAlign == face.TextAlign;
+                }
+            }
         }
-
 
         List<FLERControl> controls = new List<FLERControl>();
         FLERControl hover;
@@ -431,7 +464,7 @@ namespace FLER
 
         private void button2_Click(object sender, EventArgs e)
         {
-            timer1.Start();
+            BuildNewCard();
         }
 
         private void FLERForm_MouseLeave(object sender, EventArgs e)

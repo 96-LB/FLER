@@ -29,162 +29,162 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Label label12;
-            System.Windows.Forms.Label label8;
-            System.Windows.Forms.Label label9;
-            System.Windows.Forms.Label label10;
-            System.Windows.Forms.Label label11;
-            System.Windows.Forms.Label label3;
-            System.Windows.Forms.Label label4;
-            System.Windows.Forms.Label label6;
-            System.Windows.Forms.Label label5;
-            System.Windows.Forms.Label label13;
+            System.Windows.Forms.Label lbl_tags;
+            System.Windows.Forms.Label lbl_img_left;
+            System.Windows.Forms.Label lbl_img_top;
+            System.Windows.Forms.Label lbl_img_height;
+            System.Windows.Forms.Label lbl_img_width;
+            System.Windows.Forms.Label lbl_txt_left;
+            System.Windows.Forms.Label lbl_txt_top;
+            System.Windows.Forms.Label lbl_txt_height;
+            System.Windows.Forms.Label lbl_txt_width;
+            System.Windows.Forms.Label lbl_filename;
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton5 = new System.Windows.Forms.RadioButton();
-            this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txt_tags = new System.Windows.Forms.TextBox();
+            this.radio_ml = new System.Windows.Forms.RadioButton();
+            this.radio_tl = new System.Windows.Forms.RadioButton();
+            this.radio_mr = new System.Windows.Forms.RadioButton();
+            this.radio_tr = new System.Windows.Forms.RadioButton();
+            this.check_drawover = new System.Windows.Forms.CheckBox();
+            this.txt_text = new System.Windows.Forms.TextBox();
+            this.pnl_builder = new System.Windows.Forms.Panel();
+            this.txt_filename = new System.Windows.Forms.TextBox();
             this.lbl_font = new System.Windows.Forms.Label();
-            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.radioButton7 = new System.Windows.Forms.RadioButton();
-            this.radioButton8 = new System.Windows.Forms.RadioButton();
-            this.radioButton9 = new System.Windows.Forms.RadioButton();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
+            this.num_img_left = new System.Windows.Forms.NumericUpDown();
+            this.num_img_top = new System.Windows.Forms.NumericUpDown();
+            this.num_img_width = new System.Windows.Forms.NumericUpDown();
+            this.num_img_height = new System.Windows.Forms.NumericUpDown();
+            this.pnl_txt_color = new System.Windows.Forms.Panel();
+            this.img_img = new System.Windows.Forms.PictureBox();
+            this.radio_bc = new System.Windows.Forms.RadioButton();
+            this.radio_mc = new System.Windows.Forms.RadioButton();
+            this.radio_tc = new System.Windows.Forms.RadioButton();
+            this.radio_br = new System.Windows.Forms.RadioButton();
+            this.pnl_linecolor = new System.Windows.Forms.Panel();
+            this.pnl_backcolor = new System.Windows.Forms.Panel();
+            this.radio_bl = new System.Windows.Forms.RadioButton();
+            this.num_txt_left = new System.Windows.Forms.NumericUpDown();
+            this.num_txt_top = new System.Windows.Forms.NumericUpDown();
+            this.num_txt_width = new System.Windows.Forms.NumericUpDown();
+            this.num_txt_height = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
-            label12 = new System.Windows.Forms.Label();
-            label8 = new System.Windows.Forms.Label();
-            label9 = new System.Windows.Forms.Label();
-            label10 = new System.Windows.Forms.Label();
-            label11 = new System.Windows.Forms.Label();
-            label3 = new System.Windows.Forms.Label();
-            label4 = new System.Windows.Forms.Label();
-            label6 = new System.Windows.Forms.Label();
-            label5 = new System.Windows.Forms.Label();
-            label13 = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            lbl_tags = new System.Windows.Forms.Label();
+            lbl_img_left = new System.Windows.Forms.Label();
+            lbl_img_top = new System.Windows.Forms.Label();
+            lbl_img_height = new System.Windows.Forms.Label();
+            lbl_img_width = new System.Windows.Forms.Label();
+            lbl_txt_left = new System.Windows.Forms.Label();
+            lbl_txt_top = new System.Windows.Forms.Label();
+            lbl_txt_height = new System.Windows.Forms.Label();
+            lbl_txt_width = new System.Windows.Forms.Label();
+            lbl_filename = new System.Windows.Forms.Label();
+            this.pnl_builder.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_left)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_top)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_width)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_height)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.img_img)).BeginInit();
+            this.pnl_linecolor.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_left)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_top)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_width)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_height)).BeginInit();
             this.SuspendLayout();
             // 
-            // label12
+            // lbl_tags
             // 
-            label12.AutoSize = true;
-            label12.Location = new System.Drawing.Point(5, 42);
-            label12.Name = "label12";
-            label12.Size = new System.Drawing.Size(140, 13);
-            label12.TabIndex = 45;
-            label12.Text = "Tags (separate with spaces)";
+            lbl_tags.AutoSize = true;
+            lbl_tags.Location = new System.Drawing.Point(5, 42);
+            lbl_tags.Name = "lbl_tags";
+            lbl_tags.Size = new System.Drawing.Size(140, 13);
+            lbl_tags.TabIndex = 45;
+            lbl_tags.Text = "Tags (separate with spaces)";
             // 
-            // label8
+            // lbl_img_left
             // 
-            label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(13, 137);
-            label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(25, 13);
-            label8.TabIndex = 37;
-            label8.Text = "Left";
+            lbl_img_left.AutoSize = true;
+            lbl_img_left.Location = new System.Drawing.Point(5, 137);
+            lbl_img_left.Name = "lbl_img_left";
+            lbl_img_left.Size = new System.Drawing.Size(25, 13);
+            lbl_img_left.TabIndex = 37;
+            lbl_img_left.Text = "Left";
             // 
-            // label9
+            // lbl_img_top
             // 
-            label9.AutoSize = true;
-            label9.Location = new System.Drawing.Point(60, 137);
-            label9.Name = "label9";
-            label9.Size = new System.Drawing.Size(26, 13);
-            label9.TabIndex = 39;
-            label9.Text = "Top";
+            lbl_img_top.AutoSize = true;
+            lbl_img_top.Location = new System.Drawing.Point(60, 137);
+            lbl_img_top.Name = "lbl_img_top";
+            lbl_img_top.Size = new System.Drawing.Size(26, 13);
+            lbl_img_top.TabIndex = 39;
+            lbl_img_top.Text = "Top";
             // 
-            // label10
+            // lbl_img_height
             // 
-            label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(60, 176);
-            label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(38, 13);
-            label10.TabIndex = 43;
-            label10.Text = "Height";
+            lbl_img_height.AutoSize = true;
+            lbl_img_height.Location = new System.Drawing.Point(60, 176);
+            lbl_img_height.Name = "lbl_img_height";
+            lbl_img_height.Size = new System.Drawing.Size(38, 13);
+            lbl_img_height.TabIndex = 43;
+            lbl_img_height.Text = "Height";
             // 
-            // label11
+            // lbl_img_width
             // 
-            label11.AutoSize = true;
-            label11.Location = new System.Drawing.Point(13, 176);
-            label11.Name = "label11";
-            label11.Size = new System.Drawing.Size(35, 13);
-            label11.TabIndex = 41;
-            label11.Text = "Width";
+            lbl_img_width.AutoSize = true;
+            lbl_img_width.Location = new System.Drawing.Point(5, 176);
+            lbl_img_width.Name = "lbl_img_width";
+            lbl_img_width.Size = new System.Drawing.Size(35, 13);
+            lbl_img_width.TabIndex = 41;
+            lbl_img_width.Text = "Width";
             // 
-            // label3
+            // lbl_txt_left
             // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(142, 137);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(25, 13);
-            label3.TabIndex = 25;
-            label3.Text = "Left";
+            lbl_txt_left.AutoSize = true;
+            lbl_txt_left.Location = new System.Drawing.Point(130, 137);
+            lbl_txt_left.Name = "lbl_txt_left";
+            lbl_txt_left.Size = new System.Drawing.Size(25, 13);
+            lbl_txt_left.TabIndex = 25;
+            lbl_txt_left.Text = "Left";
             // 
-            // label4
+            // lbl_txt_top
             // 
-            label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(189, 137);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(26, 13);
-            label4.TabIndex = 27;
-            label4.Text = "Top";
+            lbl_txt_top.AutoSize = true;
+            lbl_txt_top.Location = new System.Drawing.Point(189, 137);
+            lbl_txt_top.Name = "lbl_txt_top";
+            lbl_txt_top.Size = new System.Drawing.Size(26, 13);
+            lbl_txt_top.TabIndex = 27;
+            lbl_txt_top.Text = "Top";
             // 
-            // label6
+            // lbl_txt_height
             // 
-            label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(189, 176);
-            label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(38, 13);
-            label6.TabIndex = 31;
-            label6.Text = "Height";
+            lbl_txt_height.AutoSize = true;
+            lbl_txt_height.Location = new System.Drawing.Point(189, 176);
+            lbl_txt_height.Name = "lbl_txt_height";
+            lbl_txt_height.Size = new System.Drawing.Size(38, 13);
+            lbl_txt_height.TabIndex = 31;
+            lbl_txt_height.Text = "Height";
             // 
-            // label5
+            // lbl_txt_width
             // 
-            label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(142, 176);
-            label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(35, 13);
-            label5.TabIndex = 29;
-            label5.Text = "Width";
+            lbl_txt_width.AutoSize = true;
+            lbl_txt_width.Location = new System.Drawing.Point(130, 176);
+            lbl_txt_width.Name = "lbl_txt_width";
+            lbl_txt_width.Size = new System.Drawing.Size(35, 13);
+            lbl_txt_width.TabIndex = 29;
+            lbl_txt_width.Text = "Width";
             // 
-            // label13
+            // lbl_filename
             // 
-            label13.AutoSize = true;
-            label13.Location = new System.Drawing.Point(5, 4);
-            label13.Name = "label13";
-            label13.Size = new System.Drawing.Size(49, 13);
-            label13.TabIndex = 48;
-            label13.Text = "Filename";
+            lbl_filename.AutoSize = true;
+            lbl_filename.Location = new System.Drawing.Point(5, 4);
+            lbl_filename.Name = "lbl_filename";
+            lbl_filename.Size = new System.Drawing.Size(49, 13);
+            lbl_filename.TabIndex = 48;
+            lbl_filename.Text = "Filename";
             // 
             // button1
             // 
@@ -240,125 +240,129 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "0";
             // 
-            // textBox1
+            // txt_tags
             // 
-            this.textBox1.Location = new System.Drawing.Point(7, 57);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(232, 20);
-            this.textBox1.TabIndex = 8;
+            this.txt_tags.Location = new System.Drawing.Point(7, 57);
+            this.txt_tags.Multiline = true;
+            this.txt_tags.Name = "txt_tags";
+            this.txt_tags.Size = new System.Drawing.Size(232, 20);
+            this.txt_tags.TabIndex = 8;
             // 
-            // radioButton2
+            // radio_ml
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(159, 238);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(14, 13);
-            this.radioButton2.TabIndex = 19;
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radio_ml.AutoSize = true;
+            this.radio_ml.Location = new System.Drawing.Point(159, 238);
+            this.radio_ml.Name = "radio_ml";
+            this.radio_ml.Size = new System.Drawing.Size(14, 13);
+            this.radio_ml.TabIndex = 19;
+            this.radio_ml.TabStop = true;
+            this.radio_ml.UseVisualStyleBackColor = true;
             // 
-            // radioButton1
+            // radio_tl
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(159, 219);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(14, 13);
-            this.radioButton1.TabIndex = 18;
-            this.radioButton1.Tag = "TopLeft";
-            this.radioButton1.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radio_tl.AutoSize = true;
+            this.radio_tl.Location = new System.Drawing.Point(159, 219);
+            this.radio_tl.Name = "radio_tl";
+            this.radio_tl.Size = new System.Drawing.Size(14, 13);
+            this.radio_tl.TabIndex = 18;
+            this.radio_tl.TabStop = true;
+            this.radio_tl.Tag = "";
+            this.radio_tl.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.radio_tl.UseVisualStyleBackColor = true;
             // 
-            // radioButton5
+            // radio_mr
             // 
-            this.radioButton5.AutoSize = true;
-            this.radioButton5.Location = new System.Drawing.Point(199, 238);
-            this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(14, 13);
-            this.radioButton5.TabIndex = 19;
-            this.radioButton5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.radioButton5.UseVisualStyleBackColor = true;
+            this.radio_mr.AutoSize = true;
+            this.radio_mr.Location = new System.Drawing.Point(199, 238);
+            this.radio_mr.Name = "radio_mr";
+            this.radio_mr.Size = new System.Drawing.Size(14, 13);
+            this.radio_mr.TabIndex = 19;
+            this.radio_mr.TabStop = true;
+            this.radio_mr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.radio_mr.UseVisualStyleBackColor = true;
             // 
-            // radioButton6
+            // radio_tr
             // 
-            this.radioButton6.AutoSize = true;
-            this.radioButton6.Location = new System.Drawing.Point(199, 219);
-            this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(14, 13);
-            this.radioButton6.TabIndex = 18;
-            this.radioButton6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.radioButton6.UseVisualStyleBackColor = true;
+            this.radio_tr.AutoSize = true;
+            this.radio_tr.Location = new System.Drawing.Point(199, 219);
+            this.radio_tr.Name = "radio_tr";
+            this.radio_tr.Size = new System.Drawing.Size(14, 13);
+            this.radio_tr.TabIndex = 18;
+            this.radio_tr.TabStop = true;
+            this.radio_tr.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.radio_tr.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // check_drawover
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox2.Location = new System.Drawing.Point(15, 212);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(99, 18);
-            this.checkBox2.TabIndex = 22;
-            this.checkBox2.Text = "Draw over text";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.check_drawover.AutoSize = true;
+            this.check_drawover.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_drawover.Location = new System.Drawing.Point(15, 212);
+            this.check_drawover.Name = "check_drawover";
+            this.check_drawover.Size = new System.Drawing.Size(99, 18);
+            this.check_drawover.TabIndex = 22;
+            this.check_drawover.Text = "Draw over text";
+            this.check_drawover.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // txt_text
             // 
-            this.textBox2.Location = new System.Drawing.Point(133, 83);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(106, 34);
-            this.textBox2.TabIndex = 23;
-            this.textBox2.Text = "Text";
+            this.txt_text.Location = new System.Drawing.Point(133, 83);
+            this.txt_text.Multiline = true;
+            this.txt_text.Name = "txt_text";
+            this.txt_text.Size = new System.Drawing.Size(106, 34);
+            this.txt_text.TabIndex = 23;
+            this.txt_text.Text = "Text";
             // 
-            // panel1
+            // pnl_builder
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel1.Controls.Add(label13);
-            this.panel1.Controls.Add(this.textBox3);
-            this.panel1.Controls.Add(this.lbl_font);
-            this.panel1.Controls.Add(label12);
-            this.panel1.Controls.Add(this.numericUpDown5);
-            this.panel1.Controls.Add(label8);
-            this.panel1.Controls.Add(this.numericUpDown6);
-            this.panel1.Controls.Add(label9);
-            this.panel1.Controls.Add(this.numericUpDown7);
-            this.panel1.Controls.Add(label10);
-            this.panel1.Controls.Add(label11);
-            this.panel1.Controls.Add(this.numericUpDown8);
-            this.panel1.Controls.Add(this.panel4);
-            this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Controls.Add(this.radioButton7);
-            this.panel1.Controls.Add(this.radioButton8);
-            this.panel1.Controls.Add(this.radioButton9);
-            this.panel1.Controls.Add(this.radioButton4);
-            this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.radioButton3);
-            this.panel1.Controls.Add(this.radioButton5);
-            this.panel1.Controls.Add(this.radioButton2);
-            this.panel1.Controls.Add(this.radioButton6);
-            this.panel1.Controls.Add(this.numericUpDown1);
-            this.panel1.Controls.Add(this.radioButton1);
-            this.panel1.Controls.Add(label3);
-            this.panel1.Controls.Add(this.numericUpDown2);
-            this.panel1.Controls.Add(label4);
-            this.panel1.Controls.Add(this.numericUpDown3);
-            this.panel1.Controls.Add(label6);
-            this.panel1.Controls.Add(label5);
-            this.panel1.Controls.Add(this.numericUpDown4);
-            this.panel1.Controls.Add(this.textBox2);
-            this.panel1.Controls.Add(this.checkBox2);
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(734, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(242, 378);
-            this.panel1.TabIndex = 5;
+            this.pnl_builder.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pnl_builder.Controls.Add(lbl_filename);
+            this.pnl_builder.Controls.Add(this.txt_filename);
+            this.pnl_builder.Controls.Add(this.lbl_font);
+            this.pnl_builder.Controls.Add(lbl_tags);
+            this.pnl_builder.Controls.Add(this.num_img_left);
+            this.pnl_builder.Controls.Add(lbl_img_left);
+            this.pnl_builder.Controls.Add(this.num_img_top);
+            this.pnl_builder.Controls.Add(lbl_img_top);
+            this.pnl_builder.Controls.Add(this.num_img_width);
+            this.pnl_builder.Controls.Add(lbl_img_height);
+            this.pnl_builder.Controls.Add(lbl_img_width);
+            this.pnl_builder.Controls.Add(this.num_img_height);
+            this.pnl_builder.Controls.Add(this.pnl_txt_color);
+            this.pnl_builder.Controls.Add(this.img_img);
+            this.pnl_builder.Controls.Add(this.radio_bc);
+            this.pnl_builder.Controls.Add(this.radio_mc);
+            this.pnl_builder.Controls.Add(this.radio_tc);
+            this.pnl_builder.Controls.Add(this.radio_br);
+            this.pnl_builder.Controls.Add(this.pnl_linecolor);
+            this.pnl_builder.Controls.Add(this.radio_bl);
+            this.pnl_builder.Controls.Add(this.radio_mr);
+            this.pnl_builder.Controls.Add(this.radio_ml);
+            this.pnl_builder.Controls.Add(this.radio_tr);
+            this.pnl_builder.Controls.Add(this.num_txt_left);
+            this.pnl_builder.Controls.Add(this.radio_tl);
+            this.pnl_builder.Controls.Add(lbl_txt_left);
+            this.pnl_builder.Controls.Add(this.num_txt_top);
+            this.pnl_builder.Controls.Add(lbl_txt_top);
+            this.pnl_builder.Controls.Add(this.num_txt_width);
+            this.pnl_builder.Controls.Add(lbl_txt_height);
+            this.pnl_builder.Controls.Add(lbl_txt_width);
+            this.pnl_builder.Controls.Add(this.num_txt_height);
+            this.pnl_builder.Controls.Add(this.txt_text);
+            this.pnl_builder.Controls.Add(this.check_drawover);
+            this.pnl_builder.Controls.Add(this.txt_tags);
+            this.pnl_builder.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnl_builder.Location = new System.Drawing.Point(734, 0);
+            this.pnl_builder.Name = "pnl_builder";
+            this.pnl_builder.Size = new System.Drawing.Size(242, 378);
+            this.pnl_builder.TabIndex = 5;
             // 
-            // textBox3
+            // txt_filename
             // 
-            this.textBox3.Location = new System.Drawing.Point(7, 19);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(232, 20);
-            this.textBox3.TabIndex = 47;
+            this.txt_filename.Location = new System.Drawing.Point(7, 19);
+            this.txt_filename.Multiline = true;
+            this.txt_filename.Name = "txt_filename";
+            this.txt_filename.Size = new System.Drawing.Size(232, 20);
+            this.txt_filename.TabIndex = 47;
             // 
             // lbl_font
             // 
@@ -370,223 +374,228 @@
             this.lbl_font.Name = "lbl_font";
             this.lbl_font.Size = new System.Drawing.Size(109, 41);
             this.lbl_font.TabIndex = 46;
-            this.lbl_font.Tag = "24";
+            this.lbl_font.Tag = "";
             this.lbl_font.Text = "Arial, 24pt, Bold";
             this.lbl_font.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lbl_font.UseCompatibleTextRendering = true;
             this.lbl_font.Click += new System.EventHandler(this.PickFont);
             // 
-            // numericUpDown5
+            // num_img_left
             // 
-            this.numericUpDown5.Location = new System.Drawing.Point(7, 153);
-            this.numericUpDown5.Maximum = new decimal(new int[] {
+            this.num_img_left.Location = new System.Drawing.Point(7, 153);
+            this.num_img_left.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown5.Minimum = new decimal(new int[] {
+            this.num_img_left.Minimum = new decimal(new int[] {
             9999,
             0,
             0,
             -2147483648});
-            this.numericUpDown5.Name = "numericUpDown5";
-            this.numericUpDown5.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown5.TabIndex = 36;
+            this.num_img_left.Name = "num_img_left";
+            this.num_img_left.Size = new System.Drawing.Size(50, 20);
+            this.num_img_left.TabIndex = 36;
             // 
-            // numericUpDown6
+            // num_img_top
             // 
-            this.numericUpDown6.Location = new System.Drawing.Point(63, 153);
-            this.numericUpDown6.Maximum = new decimal(new int[] {
+            this.num_img_top.Location = new System.Drawing.Point(63, 153);
+            this.num_img_top.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown6.Minimum = new decimal(new int[] {
+            this.num_img_top.Minimum = new decimal(new int[] {
             9999,
             0,
             0,
             -2147483648});
-            this.numericUpDown6.Name = "numericUpDown6";
-            this.numericUpDown6.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown6.TabIndex = 38;
+            this.num_img_top.Name = "num_img_top";
+            this.num_img_top.Size = new System.Drawing.Size(50, 20);
+            this.num_img_top.TabIndex = 38;
             // 
-            // numericUpDown7
+            // num_img_width
             // 
-            this.numericUpDown7.Location = new System.Drawing.Point(8, 192);
-            this.numericUpDown7.Maximum = new decimal(new int[] {
+            this.num_img_width.Location = new System.Drawing.Point(8, 192);
+            this.num_img_width.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown7.Name = "numericUpDown7";
-            this.numericUpDown7.Size = new System.Drawing.Size(49, 20);
-            this.numericUpDown7.TabIndex = 40;
+            this.num_img_width.Name = "num_img_width";
+            this.num_img_width.Size = new System.Drawing.Size(49, 20);
+            this.num_img_width.TabIndex = 40;
             // 
-            // numericUpDown8
+            // num_img_height
             // 
-            this.numericUpDown8.Location = new System.Drawing.Point(63, 192);
-            this.numericUpDown8.Maximum = new decimal(new int[] {
+            this.num_img_height.Location = new System.Drawing.Point(63, 192);
+            this.num_img_height.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown8.Name = "numericUpDown8";
-            this.numericUpDown8.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown8.TabIndex = 42;
+            this.num_img_height.Name = "num_img_height";
+            this.num_img_height.Size = new System.Drawing.Size(50, 20);
+            this.num_img_height.TabIndex = 42;
             // 
-            // panel4
+            // pnl_txt_color
             // 
-            this.panel4.BackColor = System.Drawing.Color.Black;
-            this.panel4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panel4.Location = new System.Drawing.Point(133, 123);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(106, 10);
-            this.panel4.TabIndex = 34;
-            this.panel4.Click += new System.EventHandler(this.PickColor);
+            this.pnl_txt_color.BackColor = System.Drawing.Color.Black;
+            this.pnl_txt_color.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pnl_txt_color.Location = new System.Drawing.Point(133, 123);
+            this.pnl_txt_color.Name = "pnl_txt_color";
+            this.pnl_txt_color.Size = new System.Drawing.Size(106, 10);
+            this.pnl_txt_color.TabIndex = 34;
+            this.pnl_txt_color.Click += new System.EventHandler(this.PickColor);
             // 
-            // pictureBox1
+            // img_img
             // 
-            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox1.Image = global::FLER.Properties.Resources.Missing;
-            this.pictureBox1.Location = new System.Drawing.Point(63, 83);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.PickImage);
+            this.img_img.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.img_img.Image = global::FLER.Properties.Resources.Missing;
+            this.img_img.Location = new System.Drawing.Point(63, 83);
+            this.img_img.Name = "img_img";
+            this.img_img.Size = new System.Drawing.Size(50, 50);
+            this.img_img.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.img_img.TabIndex = 7;
+            this.img_img.TabStop = false;
+            this.img_img.Click += new System.EventHandler(this.PickImage);
             // 
-            // radioButton7
+            // radio_bc
             // 
-            this.radioButton7.AutoSize = true;
-            this.radioButton7.Location = new System.Drawing.Point(179, 257);
-            this.radioButton7.Name = "radioButton7";
-            this.radioButton7.Size = new System.Drawing.Size(14, 13);
-            this.radioButton7.TabIndex = 35;
-            this.radioButton7.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.radioButton7.UseVisualStyleBackColor = true;
+            this.radio_bc.AutoSize = true;
+            this.radio_bc.Location = new System.Drawing.Point(179, 257);
+            this.radio_bc.Name = "radio_bc";
+            this.radio_bc.Size = new System.Drawing.Size(14, 13);
+            this.radio_bc.TabIndex = 35;
+            this.radio_bc.TabStop = true;
+            this.radio_bc.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.radio_bc.UseVisualStyleBackColor = true;
             // 
-            // radioButton8
+            // radio_mc
             // 
-            this.radioButton8.AutoSize = true;
-            this.radioButton8.Checked = true;
-            this.radioButton8.Location = new System.Drawing.Point(179, 238);
-            this.radioButton8.Name = "radioButton8";
-            this.radioButton8.Size = new System.Drawing.Size(14, 13);
-            this.radioButton8.TabIndex = 34;
-            this.radioButton8.TabStop = true;
-            this.radioButton8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.radioButton8.UseVisualStyleBackColor = true;
+            this.radio_mc.AutoSize = true;
+            this.radio_mc.Checked = true;
+            this.radio_mc.Location = new System.Drawing.Point(179, 238);
+            this.radio_mc.Name = "radio_mc";
+            this.radio_mc.Size = new System.Drawing.Size(14, 13);
+            this.radio_mc.TabIndex = 34;
+            this.radio_mc.TabStop = true;
+            this.radio_mc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.radio_mc.UseVisualStyleBackColor = true;
             // 
-            // radioButton9
+            // radio_tc
             // 
-            this.radioButton9.AutoSize = true;
-            this.radioButton9.Location = new System.Drawing.Point(179, 219);
-            this.radioButton9.Name = "radioButton9";
-            this.radioButton9.Size = new System.Drawing.Size(14, 13);
-            this.radioButton9.TabIndex = 33;
-            this.radioButton9.Tag = "";
-            this.radioButton9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.radioButton9.UseVisualStyleBackColor = true;
+            this.radio_tc.AutoSize = true;
+            this.radio_tc.Location = new System.Drawing.Point(179, 219);
+            this.radio_tc.Name = "radio_tc";
+            this.radio_tc.Size = new System.Drawing.Size(14, 13);
+            this.radio_tc.TabIndex = 33;
+            this.radio_tc.TabStop = true;
+            this.radio_tc.Tag = "";
+            this.radio_tc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.radio_tc.UseVisualStyleBackColor = true;
             // 
-            // radioButton4
+            // radio_br
             // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.CheckAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.radioButton4.Location = new System.Drawing.Point(199, 257);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(14, 13);
-            this.radioButton4.TabIndex = 20;
-            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radio_br.AutoSize = true;
+            this.radio_br.CheckAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.radio_br.Location = new System.Drawing.Point(199, 257);
+            this.radio_br.Name = "radio_br";
+            this.radio_br.Size = new System.Drawing.Size(14, 13);
+            this.radio_br.TabIndex = 20;
+            this.radio_br.TabStop = true;
+            this.radio_br.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.radio_br.UseVisualStyleBackColor = true;
             // 
-            // panel2
+            // pnl_linecolor
             // 
-            this.panel2.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.panel2.Controls.Add(this.panel3);
-            this.panel2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panel2.Location = new System.Drawing.Point(7, 83);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(50, 50);
-            this.panel2.TabIndex = 32;
-            this.panel2.Click += new System.EventHandler(this.PickColor);
+            this.pnl_linecolor.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.pnl_linecolor.Controls.Add(this.pnl_backcolor);
+            this.pnl_linecolor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pnl_linecolor.Location = new System.Drawing.Point(7, 83);
+            this.pnl_linecolor.Name = "pnl_linecolor";
+            this.pnl_linecolor.Size = new System.Drawing.Size(50, 50);
+            this.pnl_linecolor.TabIndex = 32;
+            this.pnl_linecolor.Click += new System.EventHandler(this.PickColor);
             // 
-            // panel3
+            // pnl_backcolor
             // 
-            this.panel3.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.panel3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panel3.Location = new System.Drawing.Point(10, 10);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(30, 30);
-            this.panel3.TabIndex = 33;
-            this.panel3.Click += new System.EventHandler(this.PickColor);
+            this.pnl_backcolor.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.pnl_backcolor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pnl_backcolor.Location = new System.Drawing.Point(10, 10);
+            this.pnl_backcolor.Name = "pnl_backcolor";
+            this.pnl_backcolor.Size = new System.Drawing.Size(30, 30);
+            this.pnl_backcolor.TabIndex = 33;
+            this.pnl_backcolor.Click += new System.EventHandler(this.PickColor);
             // 
-            // radioButton3
+            // radio_bl
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(159, 257);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(14, 13);
-            this.radioButton3.TabIndex = 20;
-            this.radioButton3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radio_bl.AutoSize = true;
+            this.radio_bl.Location = new System.Drawing.Point(159, 257);
+            this.radio_bl.Name = "radio_bl";
+            this.radio_bl.Size = new System.Drawing.Size(14, 13);
+            this.radio_bl.TabIndex = 20;
+            this.radio_bl.TabStop = true;
+            this.radio_bl.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.radio_bl.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // num_txt_left
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(133, 153);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.num_txt_left.Location = new System.Drawing.Point(133, 153);
+            this.num_txt_left.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.num_txt_left.Minimum = new decimal(new int[] {
             9999,
             0,
             0,
             -2147483648});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown1.TabIndex = 24;
+            this.num_txt_left.Name = "num_txt_left";
+            this.num_txt_left.Size = new System.Drawing.Size(50, 20);
+            this.num_txt_left.TabIndex = 24;
             // 
-            // numericUpDown2
+            // num_txt_top
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(189, 153);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
+            this.num_txt_top.Location = new System.Drawing.Point(189, 153);
+            this.num_txt_top.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown2.Minimum = new decimal(new int[] {
+            this.num_txt_top.Minimum = new decimal(new int[] {
             9999,
             0,
             0,
             -2147483648});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown2.TabIndex = 26;
+            this.num_txt_top.Name = "num_txt_top";
+            this.num_txt_top.Size = new System.Drawing.Size(50, 20);
+            this.num_txt_top.TabIndex = 26;
             // 
-            // numericUpDown3
+            // num_txt_width
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(133, 192);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
+            this.num_txt_width.Location = new System.Drawing.Point(133, 192);
+            this.num_txt_width.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown3.TabIndex = 28;
+            this.num_txt_width.Name = "num_txt_width";
+            this.num_txt_width.Size = new System.Drawing.Size(50, 20);
+            this.num_txt_width.TabIndex = 28;
             // 
-            // numericUpDown4
+            // num_txt_height
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(189, 192);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
+            this.num_txt_height.Location = new System.Drawing.Point(189, 192);
+            this.num_txt_height.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(50, 20);
-            this.numericUpDown4.TabIndex = 30;
+            this.num_txt_height.Name = "num_txt_height";
+            this.num_txt_height.Size = new System.Drawing.Size(50, 20);
+            this.num_txt_height.TabIndex = 30;
             // 
             // label7
             // 
@@ -603,7 +612,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 378);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnl_builder);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button2);
@@ -616,18 +625,18 @@
             this.MouseLeave += new System.EventHandler(this.FLERForm_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FLERForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FLERForm_MouseUp);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            this.pnl_builder.ResumeLayout(false);
+            this.pnl_builder.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_left)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_top)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_width)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_img_height)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.img_img)).EndInit();
+            this.pnl_linecolor.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_left)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_top)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_width)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_txt_height)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -641,34 +650,34 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton5;
-        private System.Windows.Forms.RadioButton radioButton6;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RadioButton radioButton7;
-        private System.Windows.Forms.RadioButton radioButton8;
-        private System.Windows.Forms.RadioButton radioButton9;
-        private System.Windows.Forms.RadioButton radioButton4;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
+        private System.Windows.Forms.TextBox txt_tags;
+        private System.Windows.Forms.RadioButton radio_ml;
+        private System.Windows.Forms.RadioButton radio_tl;
+        private System.Windows.Forms.RadioButton radio_mr;
+        private System.Windows.Forms.RadioButton radio_tr;
+        private System.Windows.Forms.CheckBox check_drawover;
+        private System.Windows.Forms.TextBox txt_text;
+        private System.Windows.Forms.Panel pnl_builder;
+        private System.Windows.Forms.RadioButton radio_bc;
+        private System.Windows.Forms.RadioButton radio_mc;
+        private System.Windows.Forms.RadioButton radio_tc;
+        private System.Windows.Forms.RadioButton radio_br;
+        private System.Windows.Forms.Panel pnl_linecolor;
+        private System.Windows.Forms.RadioButton radio_bl;
+        private System.Windows.Forms.NumericUpDown num_txt_left;
+        private System.Windows.Forms.NumericUpDown num_txt_top;
+        private System.Windows.Forms.NumericUpDown num_txt_width;
+        private System.Windows.Forms.NumericUpDown num_txt_height;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown5;
-        private System.Windows.Forms.NumericUpDown numericUpDown6;
-        private System.Windows.Forms.NumericUpDown numericUpDown7;
-        private System.Windows.Forms.NumericUpDown numericUpDown8;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.PictureBox img_img;
+        private System.Windows.Forms.NumericUpDown num_img_left;
+        private System.Windows.Forms.NumericUpDown num_img_top;
+        private System.Windows.Forms.NumericUpDown num_img_width;
+        private System.Windows.Forms.NumericUpDown num_img_height;
+        private System.Windows.Forms.Panel pnl_txt_color;
+        private System.Windows.Forms.Panel pnl_backcolor;
         private System.Windows.Forms.Label lbl_font;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txt_filename;
     }
 }
 

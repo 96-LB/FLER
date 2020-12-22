@@ -43,9 +43,9 @@ namespace FLER
             public string Text { get; set; }
 
             /// <summary>
-            /// The format of the text box
+            /// The alignment of the text within the text box
             /// </summary>
-            public StringFormat TextFormat { get; set; }
+            public ContentAlignment TextAlign { get; set; }
 
             /// <summary>
             /// The font used to render the text box
@@ -91,7 +91,7 @@ namespace FLER
                 Text = "Visible",
                 TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT),
                 TextColor = Color.Black,
-                TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center },
+                TextAlign = ContentAlignment.MiddleCenter,
                 Font = StaticFlashcardControl.FONT_DEF,
             },
             Hidden = new Face()
@@ -101,18 +101,18 @@ namespace FLER
                 Text = "Hidden",
                 TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT),
                 TextColor = Color.Black,
-                TextFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center },
+                TextAlign = ContentAlignment.MiddleCenter,
                 Font = StaticFlashcardControl.FONT_DEF,
             }
         };
 
         #endregion
 
-            #region Public Instance
+        #region Public Instance
 
-            /// <summary>
-            /// The file from which the flashcard was loaded
-            /// </summary>
+        /// <summary>
+        /// The file from which the flashcard was loaded
+        /// </summary>
         public string Filename { get; set; }
 
         /// <summary>

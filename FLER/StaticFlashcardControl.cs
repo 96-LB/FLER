@@ -147,7 +147,7 @@ namespace FLER
             using Brush backBrush = new SolidBrush(face.BackColor); //the brush used to color the background of the flashcard
             using Brush textBrush = new SolidBrush(face.TextColor); //the brush used to color the text of the flashcard
             using Pen borderPen = new Pen(face.LineColor, OUTLINE); //the pen used to color the border of the flashcard
-            
+
             int WDIAMETER = Math.Min(DIAMETER, WIDTH - OUTLINE); //the constrained width (horizontal) diameter
             int HDIAMETER = Math.Min(DIAMETER, HEIGHT - OUTLINE); //the constrained height (vertical) diameter
             int RIGHT = WIDTH - WDIAMETER - OUT; //the start position of the right corner arcs
@@ -171,7 +171,9 @@ namespace FLER
                 graphics.IntersectClip(face.TextBox);
 
                 //renders the text with the specified options
-                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, textBrush, face.TextBox, face.TextFormat);
+                StringAlignment horizontal = (StringAlignment)Math.Log((int)face.TextAlign % 5, 2); //extracts the horizontal alignment using the underlying enum values
+                StringAlignment vertical = (StringAlignment)Math.Log((int)face.TextAlign, 16); //extracts the vertical alignment using the underlying enum values
+                graphics.DrawString(face.Text, face.Font ?? FONT_DEF, textBrush, face.TextBox, new StringFormat() { Alignment = horizontal, LineAlignment = vertical });
             }
 
             //draws the image in the face's image box
@@ -266,7 +268,13 @@ namespace FLER
             _visible?.Dispose();
             _hidden?.Dispose();
 
-            string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v.png"); //the visible face's stored image path
+            //if the temporary image directory exists, delete it
+            if (Directory.Exists(Path.Combine(FLERForm.IMG_DIR, "TEMP")))
+            {
+                Directory.Delete(Path.Combine(FLERForm.IMG_DIR, "TEMP"), true);
+            }
+
+            string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename ?? "TEMP", "v.png"); //the visible face's stored image path
             try
             {
                 //load the stored image if it exists
@@ -281,7 +289,7 @@ namespace FLER
                 _visible = image;
             }
 
-            string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h.png"); //the hidden face's stored image path
+            string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename ?? "TEMP", "h.png"); //the hidden face's stored image path
             try
             {
                 //load the stored image if it exists
