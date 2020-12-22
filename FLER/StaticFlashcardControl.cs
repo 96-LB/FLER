@@ -19,9 +19,14 @@ namespace FLER
         #region Properties
 
         /// <summary>
+        /// Whether the flashcard is flipped to show the hidden face
+        /// </summary>
+        public bool Flipped { get; protected set; }
+
+        /// <summary>
         /// [Internal] The list of sprites for the currently selected face
         /// </summary>
-        protected Image Sprite { get => _flipped ? _hidden : _visible; }
+        protected Image Sprite { get => Flipped ? _hidden : _visible; }
 
         #region [Sprite] Backing Fields
 
@@ -45,11 +50,6 @@ namespace FLER
         #endregion
 
         #region Fields
-
-        /// <summary>
-        /// [Internal] Whether the flashcard is flipped to show the hidden face
-        /// </summary>
-        protected bool _flipped = false;
 
         /// <summary>
         /// [Internal] Whether the mouse is over the flashcard bounds
@@ -306,7 +306,7 @@ namespace FLER
         public virtual bool Flip()
         {
             //flips the flip variable
-            _flipped = !_flipped;
+            Flipped = !Flipped;
             return true; //returns true to repaint the control
         }
 

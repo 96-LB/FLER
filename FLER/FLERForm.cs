@@ -62,6 +62,7 @@ namespace FLER
             TESTCODE();
             /// TEST CODE
         }
+
         #endregion
 
         #region Methods
@@ -132,13 +133,13 @@ namespace FLER
             if (CurrentCard != null)
             {
                 checkBox1.Text = "" + CurrentCard.Level;
-                Invalidate(fc.Bounds);
+                Invalidate(sfc_builder.Bounds);
             }
             else
             {
                 checkBox1.Text = "null";
             }
-            fc.Width += RAND.Next(-50, 51);
+            sfc_builder.Width += RAND.Next(-50, 51);
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace FLER
             CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
             //load the sprites of the selected flashcard
-            if (CurrentCard != null && fc.LoadCard(CurrentCard))
+            if (CurrentCard != null && sfc_builder.LoadCard(CurrentCard))
             {
                 Invalidate();
             }
@@ -296,11 +297,11 @@ namespace FLER
             //f.Save("ff.fler");
             Flashcard.TryLoad("phil.fler", out f);
             building.Filename = "test.fler";
-            if (fc.LoadCard(building))
+            if (sfc_builder.LoadCard(building))
             {
                 Invalidate();
             }
-            controls.Add(fc);
+            controls.Add(sfc_builder);
 
             //sets the initial size of the text box to the flashcard size
             numericUpDown3.Value = StaticFlashcardControl.WIDTH;
@@ -317,16 +318,29 @@ namespace FLER
             DrawCard();
         }
 
-        readonly DynamicFlashcardControl fc = new DynamicFlashcardControl() { Bounds = new Rectangle(200, 100, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
+        readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 100, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
         
         private void timer1_Tick(object sender, EventArgs e)
         {
-            label2.Text = "" + (1 + int.Parse(label2.Text));
-            if (fc.Tick())
-            {
-                Invalidate(fc.Bounds);
-            }
+            //label2.Text = "" + (1 + int.Parse(label2.Text));
+            //if (sfc_builder.Tick())
+            //{
+            //    Invalidate(sfc_builder.Bounds);
+            //}
         }
+
+        
+        private void BuildNewCard()
+        {
+            sfc_builder.LoadCard(Flashcard.Default);
+
+        }
+
+        private void UpdateBuilderControls(object sender, EventArgs e)
+        {
+            Flashcard.Face face = sfc_builder.Flipped ? building.Hidden : building.Visible
+        }
+
 
         List<FLERControl> controls = new List<FLERControl>();
         FLERControl hover;

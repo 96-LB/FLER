@@ -22,7 +22,7 @@ namespace FLER
         /// <summary>
         /// [Internal] The list of sprites for the currently selected face
         /// </summary>
-        private List<Image> Sprites { get => _flipped ? _hidden : _visible; }
+        private List<Image> Sprites { get => Flipped ? _hidden : _visible; }
 
         #region [Sprites] Backing Fields
 
@@ -167,7 +167,7 @@ namespace FLER
             for (int i = 0; i < 180; i += INTERVAL)
             {
                 //if past 90 degrees, add each face's sprites to the opposite list
-                _flipped = i > 90;
+                Flipped = i > 90;
                 string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png"); //the visible sprite's stored image path
                 try
                 {
@@ -176,22 +176,22 @@ namespace FLER
                 }
                 catch
                 {
-                    bool flip = _flipped; //temp value for _flipped
+                    bool flip = Flipped; //temp value for the flipped variable
                     
                     //grabs the base image to render
-                    _flipped = false;
+                    Flipped = false;
                     Image face = Sprite;
-                    _flipped = flip;
+                    Flipped = flip;
 
                     //if there is no stored image, generate it and save it
-                    Image image = RotateFace(face, _flipped ? i - 180 : i); //the rendered image
+                    Image image = RotateFace(face, Flipped ? i - 180 : i); //the rendered image
                     Directory.CreateDirectory(Path.GetDirectoryName(vpath));
                     image.Save(vpath);
                     Sprites.Add(image);
                 }
 
                 //repeat above but with the hidden sprite
-                _flipped = !_flipped;
+                Flipped = !Flipped;
                 string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png"); //the hidden sprite's stored image path
                 try
                 {
@@ -200,16 +200,16 @@ namespace FLER
                 }
                 catch
                 {
-                    bool flip = _flipped; //temp value for _flipped
+                    bool flip = Flipped; //temp value for Flipped
 
                     //grabs the base image to render
-                    _flipped = true;
+                    Flipped = true;
                     Image face = Sprite;
-                    _flipped = flip;
+                    Flipped = flip;
 
                     //if there is no stored image, generate it and save it
                     //otherwise, generate it and save it
-                    Image image = RotateFace(face, _flipped ? i : i - 180); //the rendered image
+                    Image image = RotateFace(face, Flipped ? i : i - 180); //the rendered image
                     Directory.CreateDirectory(Path.GetDirectoryName(hpath));
                     image.Save(hpath);
                     Sprites.Add(image);
@@ -217,7 +217,7 @@ namespace FLER
             }
 
             //resets movement variables
-            _flipped = true;
+            Flipped = true;
             _counter = Sprites.Count;
             Tick();
 
@@ -243,7 +243,7 @@ namespace FLER
             {
                 //reset movement variables
                 _counter = 0;
-                _flipped = !_flipped;
+                Flipped = !Flipped;
                 _moving = false;
                 Cursor = _mouse ? Cursors.Hand : Cursors.Default;
             }
