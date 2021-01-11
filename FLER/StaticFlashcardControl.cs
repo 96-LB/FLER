@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FLER
@@ -129,6 +126,8 @@ namespace FLER
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.MeasureString(" ", FONT_DEF); //fixes a strange graphics bug that turns off antialiasing for future controls when making a high-quality graphics
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             return graphics; //returns the initialized graphics
         }
@@ -274,7 +273,7 @@ namespace FLER
                 Directory.Delete(Path.Combine(FLERForm.IMG_DIR, "TEMP"), true);
             }
 
-            string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename ?? "TEMP", "v.png"); //the visible face's stored image path
+            string vpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "v.png"); //the visible face's stored image path
             try
             {
                 //load the stored image if it exists
@@ -289,7 +288,7 @@ namespace FLER
                 _visible = image;
             }
 
-            string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename ?? "TEMP", "h.png"); //the hidden face's stored image path
+            string hpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "h.png"); //the hidden face's stored image path
             try
             {
                 //load the stored image if it exists

@@ -73,6 +73,7 @@
             this.num_txt_width = new System.Windows.Forms.NumericUpDown();
             this.num_txt_height = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
+            this.tim_builder = new System.Windows.Forms.Timer(this.components);
             lbl_tags = new System.Windows.Forms.Label();
             lbl_img_left = new System.Windows.Forms.Label();
             lbl_img_top = new System.Windows.Forms.Label();
@@ -247,6 +248,7 @@
             this.txt_tags.Name = "txt_tags";
             this.txt_tags.Size = new System.Drawing.Size(232, 20);
             this.txt_tags.TabIndex = 8;
+            this.txt_tags.TextChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_ml
             // 
@@ -257,6 +259,7 @@
             this.radio_ml.TabIndex = 19;
             this.radio_ml.TabStop = true;
             this.radio_ml.UseVisualStyleBackColor = true;
+            this.radio_ml.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_tl
             // 
@@ -269,6 +272,7 @@
             this.radio_tl.Tag = "";
             this.radio_tl.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.radio_tl.UseVisualStyleBackColor = true;
+            this.radio_tl.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_mr
             // 
@@ -280,6 +284,7 @@
             this.radio_mr.TabStop = true;
             this.radio_mr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.radio_mr.UseVisualStyleBackColor = true;
+            this.radio_mr.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_tr
             // 
@@ -291,6 +296,7 @@
             this.radio_tr.TabStop = true;
             this.radio_tr.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.radio_tr.UseVisualStyleBackColor = true;
+            this.radio_tr.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // check_drawover
             // 
@@ -302,6 +308,7 @@
             this.check_drawover.TabIndex = 22;
             this.check_drawover.Text = "Draw over text";
             this.check_drawover.UseVisualStyleBackColor = true;
+            this.check_drawover.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // txt_text
             // 
@@ -311,6 +318,7 @@
             this.txt_text.Size = new System.Drawing.Size(106, 34);
             this.txt_text.TabIndex = 23;
             this.txt_text.Text = "Text";
+            this.txt_text.TextChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // pnl_builder
             // 
@@ -363,6 +371,7 @@
             this.txt_filename.Name = "txt_filename";
             this.txt_filename.Size = new System.Drawing.Size(232, 20);
             this.txt_filename.TabIndex = 47;
+            this.txt_filename.TextChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // lbl_font
             // 
@@ -396,6 +405,7 @@
             this.num_img_left.Name = "num_img_left";
             this.num_img_left.Size = new System.Drawing.Size(50, 20);
             this.num_img_left.TabIndex = 36;
+            this.num_img_left.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_img_top
             // 
@@ -413,6 +423,7 @@
             this.num_img_top.Name = "num_img_top";
             this.num_img_top.Size = new System.Drawing.Size(50, 20);
             this.num_img_top.TabIndex = 38;
+            this.num_img_top.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_img_width
             // 
@@ -425,6 +436,7 @@
             this.num_img_width.Name = "num_img_width";
             this.num_img_width.Size = new System.Drawing.Size(49, 20);
             this.num_img_width.TabIndex = 40;
+            this.num_img_width.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_img_height
             // 
@@ -437,6 +449,7 @@
             this.num_img_height.Name = "num_img_height";
             this.num_img_height.Size = new System.Drawing.Size(50, 20);
             this.num_img_height.TabIndex = 42;
+            this.num_img_height.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // pnl_txt_color
             // 
@@ -470,6 +483,7 @@
             this.radio_bc.TabStop = true;
             this.radio_bc.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.radio_bc.UseVisualStyleBackColor = true;
+            this.radio_bc.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_mc
             // 
@@ -482,6 +496,7 @@
             this.radio_mc.TabStop = true;
             this.radio_mc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.radio_mc.UseVisualStyleBackColor = true;
+            this.radio_mc.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_tc
             // 
@@ -494,6 +509,7 @@
             this.radio_tc.Tag = "";
             this.radio_tc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.radio_tc.UseVisualStyleBackColor = true;
+            this.radio_tc.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // radio_br
             // 
@@ -506,6 +522,7 @@
             this.radio_br.TabStop = true;
             this.radio_br.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             this.radio_br.UseVisualStyleBackColor = true;
+            this.radio_br.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // pnl_linecolor
             // 
@@ -538,6 +555,7 @@
             this.radio_bl.TabStop = true;
             this.radio_bl.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.radio_bl.UseVisualStyleBackColor = true;
+            this.radio_bl.CheckedChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_txt_left
             // 
@@ -555,6 +573,7 @@
             this.num_txt_left.Name = "num_txt_left";
             this.num_txt_left.Size = new System.Drawing.Size(50, 20);
             this.num_txt_left.TabIndex = 24;
+            this.num_txt_left.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_txt_top
             // 
@@ -572,6 +591,7 @@
             this.num_txt_top.Name = "num_txt_top";
             this.num_txt_top.Size = new System.Drawing.Size(50, 20);
             this.num_txt_top.TabIndex = 26;
+            this.num_txt_top.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_txt_width
             // 
@@ -584,6 +604,7 @@
             this.num_txt_width.Name = "num_txt_width";
             this.num_txt_width.Size = new System.Drawing.Size(50, 20);
             this.num_txt_width.TabIndex = 28;
+            this.num_txt_width.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // num_txt_height
             // 
@@ -596,6 +617,7 @@
             this.num_txt_height.Name = "num_txt_height";
             this.num_txt_height.Size = new System.Drawing.Size(50, 20);
             this.num_txt_height.TabIndex = 30;
+            this.num_txt_height.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
             // label7
             // 
@@ -605,6 +627,11 @@
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 6;
             this.label7.Text = "label7";
+            // 
+            // tim_builder
+            // 
+            this.tim_builder.Interval = 16;
+            this.tim_builder.Tick += new System.EventHandler(this.tim_builder_Tick);
             // 
             // FLERForm
             // 
@@ -678,6 +705,7 @@
         private System.Windows.Forms.Panel pnl_backcolor;
         private System.Windows.Forms.Label lbl_font;
         private System.Windows.Forms.TextBox txt_filename;
+        private System.Windows.Forms.Timer tim_builder;
     }
 }
 

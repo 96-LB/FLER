@@ -42,12 +42,17 @@ namespace FLER
         /// <summary>
         /// The list of loaded flashcards
         /// </summary>
-        Dictionary<string, Flashcard> Cards { get; set; } = new Dictionary<string, Flashcard>();
+        private Dictionary<string, Flashcard> Cards { get; set; } = new Dictionary<string, Flashcard>();
 
         /// <summary>
         /// The flashcard currently being reviewed
         /// </summary>
-        Flashcard CurrentCard { get; set; }
+        private Flashcard CurrentCard { get; set; } = Flashcard.Default;
+
+        /// <summary>
+        /// Whether the program is in building mode
+        /// </summary>
+        private bool Building { get; set; } = false;
 
         #endregion
 
@@ -155,7 +160,7 @@ namespace FLER
             //load the sprites of the selected flashcard
             if (CurrentCard != null && sfc_builder.LoadCard(CurrentCard))
             {
-                Invalidate();
+                Invalidate(sfc_builder.Bounds);
             }
         }
 
@@ -190,10 +195,16 @@ namespace FLER
         /// <param name="e">An object that contains no event data</param>
         private void PickColor(object sender, EventArgs e)
         {
+            //sets the dialog color to match the panel that was clicked
+            _colorDialog.Color = ((Panel)sender).BackColor;
+
             //if the user clicked ok, set the control's color
             if (_colorDialog.ShowDialog() == DialogResult.OK)
             {
                 ((Panel)sender).BackColor = _colorDialog.Color;
+                
+                //updates the flashcard
+                BeginUpdateBuilder(null, null);
             }
         }
 
@@ -228,6 +239,8 @@ namespace FLER
                 {
                     //try to read an image from the specified filepath
                     ((PictureBox)sender).Image = Image.FromFile(_fileDialog.FileName);
+                    ((PictureBox)sender).ImageLocation = _fileDialog.FileName;
+                    BeginUpdateBuilder(null, null);
                 }
                 catch
                 {
@@ -259,8 +272,8 @@ namespace FLER
             if (_fontDialog.ShowDialog() == DialogResult.OK)
             {
                 //updates reversely by changing the card's font first and using that to update the control
-                (sfc_builder.Flipped ? building.Hidden : building.Visible).Font = _fontDialog.Font;
-                sfc_builder.LoadCard(building);
+                (sfc_builder.Flipped ? CurrentCard.Hidden : CurrentCard.Visible).Font = _fontDialog.Font;
+                sfc_builder.LoadCard(CurrentCard);
                 UpdateBuilderControls(null, null);
                 Invalidate();
             }
@@ -295,21 +308,17 @@ namespace FLER
             };
             //f.Save("ff.fler");
             Flashcard.TryLoad("phil.fler", out f);
-            if (sfc_builder.LoadCard(building))
+            if (sfc_builder.LoadCard(CurrentCard))
             {
-                Invalidate();
+                Invalidate(sfc_builder.Bounds);
             }
             controls.Add(sfc_builder);
             sfc_builder.OnClick += UpdateBuilderControls;
-            //sets the initial size of the text box to the flashcard size
-            num_txt_width.Value = StaticFlashcardControl.WIDTH;
-            num_txt_height.Value = StaticFlashcardControl.HEIGHT;
+            UpdateBuilderControls(null, null);
+
+            Building = true;
         }
         /// TEST CODE
-
-
-        private Flashcard building = Flashcard.Default;
-
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -330,27 +339,30 @@ namespace FLER
 
         private void BuildNewCard()
         {
-            building = Flashcard.Default;
-            sfc_builder.LoadCard(building);
+            CurrentCard = Flashcard.Default;
+            sfc_builder.LoadCard(CurrentCard);
             UpdateBuilderControls(null, null);
             Invalidate();
         }
 
         private void UpdateBuilderControls(object sender, EventArgs e)
         {
-            txt_filename.Text = building.Filename;
-            txt_tags.Text = string.Join(" ", building.Tags ?? new string[0]);
-            Flashcard.Face face = sfc_builder.Flipped != (sender == sfc_builder)? building.Hidden : building.Visible;
+            Building = false;
+            tim_builder.Stop();
+            txt_tags.Text = string.Join(" ", CurrentCard.Tags ?? new string[0]);
+            Flashcard.Face face = sfc_builder.Flipped != (sender == sfc_builder) ? CurrentCard.Hidden : CurrentCard.Visible;
             pnl_backcolor.BackColor = face.BackColor;
             pnl_linecolor.BackColor = face.LineColor;
             try
             {
                 img_img.Image?.Dispose();
                 img_img.Image = Image.FromFile(face.ImagePath);
+                img_img.ImageLocation = face.ImagePath;
             }
             catch
             {
                 img_img.Image = Properties.Resources.Missing;
+                img_img.ImageLocation = null;
             }
             num_img_left.Value = face.ImageBox.Left;
             num_img_top.Value = face.ImageBox.Top;
@@ -373,6 +385,39 @@ namespace FLER
                     radio.Checked = radio.TextAlign == face.TextAlign;
                 }
             }
+            Building = true;
+        }
+
+        private void UpdateBuilder(object sender, EventArgs e)
+        {
+            if (!Building)
+            {
+                return;
+            }
+            CurrentCard.Filename = txt_filename.Text;
+            CurrentCard.Tags = txt_tags.Text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+            Flashcard.Face face = sfc_builder.Flipped ? CurrentCard.Hidden : CurrentCard.Visible;
+            face.BackColor = pnl_backcolor.BackColor;
+            face.LineColor = pnl_linecolor.BackColor;
+            face.ImagePath = img_img.ImageLocation;
+            face.ImageBox = new Rectangle((int)Math.Round(num_img_left.Value), (int)Math.Round(num_img_top.Value), (int)Math.Round(num_img_width.Value), (int)Math.Round(num_img_height.Value));
+            face.ImageTop = check_drawover.Checked;
+            //note: font is omitted because it is directly set in PickFont()
+            face.Text = txt_text.Text;
+            face.TextColor = pnl_txt_color.BackColor;
+            face.TextBox = new Rectangle((int)Math.Round(num_txt_left.Value), (int)Math.Round(num_txt_top.Value), (int)Math.Round(num_txt_width.Value), (int)Math.Round(num_txt_height.Value));
+            foreach (Control control in pnl_builder.Controls)
+            {
+                if (control is RadioButton radio)
+                {
+                    if (radio.Checked)
+                    {
+                        face.TextAlign = radio.TextAlign;
+                    }
+                }
+            }
+            sfc_builder.LoadCard(CurrentCard);
+            Invalidate(sfc_builder.Bounds);
         }
 
         List<FLERControl> controls = new List<FLERControl>();
@@ -381,12 +426,12 @@ namespace FLER
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
-
-            foreach (FLERControl f in controls)
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            foreach (FLERControl control in controls)
             {
-                if (f.Bounds.IntersectsWith(e.ClipRectangle))
+                if (control.Bounds.IntersectsWith(e.ClipRectangle))
                 {
-                    f.Paint(e);
+                    control.Paint(e);
                 }
             }
 
@@ -474,6 +519,17 @@ namespace FLER
                 Invalidate(hover.Bounds);
             }
             hover = null;
+        }
+
+        void BeginUpdateBuilder(object sender, EventArgs e)
+        {
+            tim_builder.Start();
+        }
+
+        private void tim_builder_Tick(object sender, EventArgs e)
+        {
+            UpdateBuilder(null, null);
+            tim_builder.Stop();
         }
 
         #endregion

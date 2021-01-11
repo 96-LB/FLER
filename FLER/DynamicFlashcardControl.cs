@@ -168,7 +168,7 @@ namespace FLER
             {
                 //if past 90 degrees, add each face's sprites to the opposite list
                 Flipped = i > 90;
-                string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png"); //the visible sprite's stored image path
+                string vpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "v", i + ".png"); //the visible sprite's stored image path
                 try
                 {
                     //load the stored image if it exists
@@ -192,7 +192,7 @@ namespace FLER
 
                 //repeat above but with the hidden sprite
                 Flipped = !Flipped;
-                string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png"); //the hidden sprite's stored image path
+                string hpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "h", i + ".png"); //the hidden sprite's stored image path
                 try
                 {
                     //load the stored image if it exists
