@@ -369,8 +369,8 @@ namespace FLER
             num_img_width.Value = face.ImageBox.Width;
             num_img_height.Value = face.ImageBox.Height;
             check_drawover.Checked = face.ImageTop;
-            lbl_font.Text = $"{face.Font.Name}, {Math.Round(face.Font.Size)}pt";
-            lbl_font.Font = new Font(face.Font.FontFamily, lbl_font.Font.Size);
+            lbl_font.Text = $"{face.Font.FontFamily.Name}, {Math.Round(face.Font.Size)}pt";
+            lbl_font.Font = new Font(face.Font.FontFamily, lbl_font.Font.Size, face.Font.Style);
             _fontDialog.Font = face.Font;
             txt_text.Text = face.Text;
             pnl_txt_color.BackColor = face.TextColor;
