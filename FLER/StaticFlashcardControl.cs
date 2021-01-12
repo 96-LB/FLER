@@ -267,40 +267,44 @@ namespace FLER
             _visible?.Dispose();
             _hidden?.Dispose();
 
-            //if the temporary image directory exists, delete it
-            if (Directory.Exists(Path.Combine(FLERForm.IMG_DIR, "TEMP")))
+            //if the card has a filename, then its images will be stored in the filesystem
+            if (!string.IsNullOrWhiteSpace(card.Filename))
             {
-                Directory.Delete(Path.Combine(FLERForm.IMG_DIR, "TEMP"), true);
-            }
+                string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v.png"); //the visible face's stored image path
+                try
+                {
+                    //load the stored image if it exists
+                    _visible = Image.FromFile(vpath);
+                }
+                catch
+                {
+                    //if there is no stored image, generate it and save it
+                    Image image = RenderFace(card.Visible); //the rendered image
+                    Directory.CreateDirectory(Path.GetDirectoryName(vpath));
+                    image.Save(vpath);
+                    _visible = image;
+                }
 
-            string vpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "v.png"); //the visible face's stored image path
-            try
-            {
-                //load the stored image if it exists
-                _visible = Image.FromFile(vpath);
+                string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h.png"); //the hidden face's stored image path
+                try
+                {
+                    //load the stored image if it exists
+                    _hidden = Image.FromFile(hpath);
+                }
+                catch
+                {
+                    //if there is no stored image, generate it and save it
+                    Image image = RenderFace(card.Hidden); //the rendered image
+                    Directory.CreateDirectory(Path.GetDirectoryName(hpath));
+                    image.Save(hpath);
+                    _hidden = image;
+                }
             }
-            catch
+            else
             {
-                //if there is no stored image, generate it and save it
-                Image image = RenderFace(card.Visible); //the rendered image
-                Directory.CreateDirectory(Path.GetDirectoryName(vpath));
-                image.Save(vpath);
-                _visible = image;
-            }
-
-            string hpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "h.png"); //the hidden face's stored image path
-            try
-            {
-                //load the stored image if it exists
-                _hidden = Image.FromFile(hpath);
-            }
-            catch
-            {
-                //if there is no stored image, generate it and save it
-                Image image = RenderFace(card.Hidden); //the rendered image
-                Directory.CreateDirectory(Path.GetDirectoryName(hpath));
-                image.Save(hpath);
-                _hidden = image;
+                //otherwise, render the images and load them straight from memory
+                _visible = RenderFace(card.Visible);
+                _hidden= RenderFace(card.Hidden);
             }
 
             return true; //returns true to repaint the control

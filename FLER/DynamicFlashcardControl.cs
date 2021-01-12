@@ -166,53 +166,64 @@ namespace FLER
             //generates sprites across a 180 degree rotation, using the specified interval
             for (int i = 0; i < 180; i += INTERVAL)
             {
-                //if past 90 degrees, add each face's sprites to the opposite list
-                Flipped = i > 90;
-                string vpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "v", i + ".png"); //the visible sprite's stored image path
-                try
+                if (!string.IsNullOrWhiteSpace(card.Filename))
                 {
-                    //load the stored image if it exists
-                    Sprites.Add(Image.FromFile(vpath));
+                    //attempt to load the visible face's sprite, generating it if it doesn't already exist
+                    string vpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "v", i + ".png"); //the visible sprite's stored image path
+                    try
+                    {
+                        //if past 90 degrees, add each face's sprites to the opposite list
+                        Flipped = i > 90;
+                        Sprites.Add(Image.FromFile(vpath));
+                    }
+                    catch
+                    {
+                        //grabs the base image to render
+                        Flipped = false;
+                        Image face = Sprite; //the static image to rotate
+                        Flipped = i > 90;
+                        
+                        //if there is no stored image, generate it and save it
+                        Image image = RotateFace(face, Flipped ? i - 180 : i); //the rendered image
+                        Directory.CreateDirectory(Path.GetDirectoryName(vpath));
+                        image.Save(vpath);
+                        Sprites.Add(image);
+                    }
+
+                    //attempt to load the hidden face's sprite, generating it if it doesn't already exist
+                    string hpath = Path.Combine(FLERForm.IMG_DIR, card.Filename, "h", i + ".png"); //the hidden sprite's stored image path
+                    try
+                    {
+                        //if past 90 degrees, add each face's sprites to the opposite list
+                        Flipped = i <= 90;
+                        Sprites.Add(Image.FromFile(hpath));
+                    }
+                    catch
+                    {
+                        //grabs the base image to render
+                        Flipped = true;
+                        Image face = Sprite; //the static image to rotate
+                        Flipped = i <= 90;
+
+                        //if there is no stored image, generate it and save it
+                        Image image = RotateFace(face, Flipped ? i : i - 180); //the rendered image
+                        Directory.CreateDirectory(Path.GetDirectoryName(hpath));
+                        image.Save(hpath);
+                        Sprites.Add(image);
+                    }
                 }
-                catch
+                else
                 {
-                    bool flip = Flipped; //temp value for the flipped variable
-                    
-                    //grabs the base image to render
+                    //otherwise, renders the images and loads them straight from memory
                     Flipped = false;
-                    Image face = Sprite;
-                    Flipped = flip;
-
-                    //if there is no stored image, generate it and save it
-                    Image image = RotateFace(face, Flipped ? i - 180 : i); //the rendered image
-                    Directory.CreateDirectory(Path.GetDirectoryName(vpath));
-                    image.Save(vpath);
-                    Sprites.Add(image);
-                }
-
-                //repeat above but with the hidden sprite
-                Flipped = !Flipped;
-                string hpath = Path.Combine(FLERForm.IMG_DIR, !string.IsNullOrWhiteSpace(card.Filename) ? card.Filename : "TEMP", "h", i + ".png"); //the hidden sprite's stored image path
-                try
-                {
-                    //load the stored image if it exists
-                    Sprites.Add(Image.FromFile(hpath));
-                }
-                catch
-                {
-                    bool flip = Flipped; //temp value for Flipped
-
-                    //grabs the base image to render
+                    Image visible = Sprite; //the static image to rotate
+                    Flipped = i > 90;
+                    Sprites.Add(RotateFace(visible, Flipped ? i - 180 : i));
+                    
                     Flipped = true;
-                    Image face = Sprite;
-                    Flipped = flip;
-
-                    //if there is no stored image, generate it and save it
-                    //otherwise, generate it and save it
-                    Image image = RotateFace(face, Flipped ? i : i - 180); //the rendered image
-                    Directory.CreateDirectory(Path.GetDirectoryName(hpath));
-                    image.Save(hpath);
-                    Sprites.Add(image);
+                    Image hidden = Sprite; //the static image to rotate
+                    Flipped = i <= 90;
+                    Sprites.Add(RotateFace(hidden, Flipped ? i : i - 180));
                 }
             }
 
