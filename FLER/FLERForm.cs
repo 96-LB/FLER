@@ -394,7 +394,6 @@ namespace FLER
             {
                 return;
             }
-            CurrentCard.Filename = txt_filename.Text;
             CurrentCard.Tags = txt_tags.Text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
             Flashcard.Face face = sfc_builder.Flipped ? CurrentCard.Hidden : CurrentCard.Visible;
             face.BackColor = pnl_backcolor.BackColor;
@@ -530,6 +529,12 @@ namespace FLER
         {
             UpdateBuilder(null, null);
             tim_builder.Stop();
+        }
+
+        private void btn_save_Click(object sender, EventArgs e)
+        {
+            CurrentCard.Filename = $"{txt_filename.Text}.fler";
+            CurrentCard.Save();
         }
 
         #endregion

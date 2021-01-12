@@ -72,8 +72,8 @@
             this.num_txt_top = new System.Windows.Forms.NumericUpDown();
             this.num_txt_width = new System.Windows.Forms.NumericUpDown();
             this.num_txt_height = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
             this.tim_builder = new System.Windows.Forms.Timer(this.components);
+            this.btn_save = new System.Windows.Forms.Button();
             lbl_tags = new System.Windows.Forms.Label();
             lbl_img_left = new System.Windows.Forms.Label();
             lbl_img_top = new System.Windows.Forms.Label();
@@ -323,6 +323,7 @@
             // pnl_builder
             // 
             this.pnl_builder.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pnl_builder.Controls.Add(this.btn_save);
             this.pnl_builder.Controls.Add(lbl_filename);
             this.pnl_builder.Controls.Add(this.txt_filename);
             this.pnl_builder.Controls.Add(this.lbl_font);
@@ -619,26 +620,26 @@
             this.num_txt_height.TabIndex = 30;
             this.num_txt_height.ValueChanged += new System.EventHandler(this.BeginUpdateBuilder);
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(457, 131);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "label7";
-            // 
             // tim_builder
             // 
             this.tim_builder.Interval = 16;
             this.tim_builder.Tick += new System.EventHandler(this.tim_builder_Tick);
+            // 
+            // btn_save
+            // 
+            this.btn_save.Location = new System.Drawing.Point(7, 284);
+            this.btn_save.Name = "btn_save";
+            this.btn_save.Size = new System.Drawing.Size(232, 23);
+            this.btn_save.TabIndex = 7;
+            this.btn_save.Text = "SAVE";
+            this.btn_save.UseVisualStyleBackColor = true;
+            this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
             // 
             // FLERForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 378);
-            this.Controls.Add(this.label7);
             this.Controls.Add(this.pnl_builder);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.checkBox1);
@@ -695,7 +696,6 @@
         private System.Windows.Forms.NumericUpDown num_txt_top;
         private System.Windows.Forms.NumericUpDown num_txt_width;
         private System.Windows.Forms.NumericUpDown num_txt_height;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.PictureBox img_img;
         private System.Windows.Forms.NumericUpDown num_img_left;
         private System.Windows.Forms.NumericUpDown num_img_top;
@@ -706,6 +706,7 @@
         private System.Windows.Forms.Label lbl_font;
         private System.Windows.Forms.TextBox txt_filename;
         private System.Windows.Forms.Timer tim_builder;
+        private System.Windows.Forms.Button btn_save;
     }
 }
 
