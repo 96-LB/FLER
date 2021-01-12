@@ -53,6 +53,7 @@
             this.check_drawover = new System.Windows.Forms.CheckBox();
             this.txt_text = new System.Windows.Forms.TextBox();
             this.pnl_builder = new System.Windows.Forms.Panel();
+            this.btn_save = new System.Windows.Forms.Button();
             this.txt_filename = new System.Windows.Forms.TextBox();
             this.lbl_font = new System.Windows.Forms.Label();
             this.num_img_left = new System.Windows.Forms.NumericUpDown();
@@ -73,7 +74,6 @@
             this.num_txt_width = new System.Windows.Forms.NumericUpDown();
             this.num_txt_height = new System.Windows.Forms.NumericUpDown();
             this.tim_builder = new System.Windows.Forms.Timer(this.components);
-            this.btn_save = new System.Windows.Forms.Button();
             lbl_tags = new System.Windows.Forms.Label();
             lbl_img_left = new System.Windows.Forms.Label();
             lbl_img_top = new System.Windows.Forms.Label();
@@ -365,14 +365,26 @@
             this.pnl_builder.Size = new System.Drawing.Size(242, 378);
             this.pnl_builder.TabIndex = 5;
             // 
+            // btn_save
+            // 
+            this.btn_save.Location = new System.Drawing.Point(7, 284);
+            this.btn_save.Name = "btn_save";
+            this.btn_save.Size = new System.Drawing.Size(232, 23);
+            this.btn_save.TabIndex = 7;
+            this.btn_save.Text = "SAVE";
+            this.btn_save.UseVisualStyleBackColor = true;
+            this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
+            // 
             // txt_filename
             // 
             this.txt_filename.Location = new System.Drawing.Point(7, 19);
+            this.txt_filename.MaxLength = 64;
             this.txt_filename.Multiline = true;
             this.txt_filename.Name = "txt_filename";
             this.txt_filename.Size = new System.Drawing.Size(232, 20);
             this.txt_filename.TabIndex = 47;
-            this.txt_filename.TextChanged += new System.EventHandler(this.BeginUpdateBuilder);
+            this.txt_filename.TextChanged += new System.EventHandler(this.ValidateFilename);
+            this.txt_filename.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValidateFilenameKeyPress);
             // 
             // lbl_font
             // 
@@ -624,16 +636,6 @@
             // 
             this.tim_builder.Interval = 16;
             this.tim_builder.Tick += new System.EventHandler(this.tim_builder_Tick);
-            // 
-            // btn_save
-            // 
-            this.btn_save.Location = new System.Drawing.Point(7, 284);
-            this.btn_save.Name = "btn_save";
-            this.btn_save.Size = new System.Drawing.Size(232, 23);
-            this.btn_save.TabIndex = 7;
-            this.btn_save.Text = "SAVE";
-            this.btn_save.UseVisualStyleBackColor = true;
-            this.btn_save.Click += new System.EventHandler(this.btn_save_Click);
             // 
             // FLERForm
             // 

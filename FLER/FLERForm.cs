@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -535,6 +536,18 @@ namespace FLER
         {
             CurrentCard.Filename = $"{txt_filename.Text}.fler";
             CurrentCard.Save();
+        }
+
+        private void ValidateFilename(object sender, EventArgs e)
+        {
+            int a = txt_filename.SelectionStart - txt_filename.Text.Length;
+            txt_filename.Text = Regex.Replace(txt_filename.Text, "[^a-zA-Z0-9-_]", "");
+            txt_filename.SelectionStart = a + txt_filename.Text.Length;
+        }
+
+        private void ValidateFilenameKeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '-' && e.KeyChar != '_' && !char.IsControl(e.KeyChar);
         }
 
         #endregion
