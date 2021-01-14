@@ -55,6 +55,11 @@ namespace FLER
         /// </summary>
         private bool Building { get; set; } = false;
 
+        /// <summary>
+        /// Whether the program is in reviewing mode
+        /// </summary>
+        private bool Reviewing { get; set; } = false;
+
         #endregion
 
         #region Constructor
@@ -126,29 +131,6 @@ namespace FLER
         }
 
         /// <summary>
-        /// Draws a flashcard from the pool and reviews it
-        /// </summary>
-        private void DrawCard()
-        {
-            ///note: not final implementation
-            if (CurrentCard != null)
-            {
-                UpdateCard(checkBox1.Checked);
-            }
-            NextCard();
-            if (CurrentCard != null)
-            {
-                checkBox1.Text = "" + CurrentCard.Level;
-                Invalidate(sfc_builder.Bounds);
-            }
-            else
-            {
-                checkBox1.Text = "null";
-            }
-            sfc_builder.Width += RAND.Next(-50, 51);
-        }
-
-        /// <summary>
         /// Identifies and selects the next flashcard to be reviewed
         /// </summary>
         private void NextCard()
@@ -159,9 +141,17 @@ namespace FLER
             CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
             //load the sprites of the selected flashcard
-            if (CurrentCard != null && sfc_builder.LoadCard(CurrentCard))
+            if (CurrentCard != null)
             {
-                Invalidate(sfc_builder.Bounds);
+                if (dfc_reviewer.LoadCard(CurrentCard))
+                {
+                    Invalidate(dfc_reviewer.Bounds);
+                }
+            }
+            else
+            {
+                //end reviewing mode if there are no more cards
+                button1_Click(null, null);
             }
         }
 
@@ -290,60 +280,41 @@ namespace FLER
         /// TEST CODE
         void TESTCODE()
         {
-
-            var f = new Flashcard()
-            {
-                Filename = "phil.fler",
-                Tags = new string[] { "phil" },
-                Hidden = new Flashcard.Face() { TextColor = Color.White, ImagePath = @"C:\Users\Admin\Downloads\2.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) },
-                Visible = new Flashcard.Face() { LineColor = Color.DarkGray, Text = "so, phil, is it?", TextColor = Color.White, Font = new Font("Times New Roman", 32), TextAlign = ContentAlignment.MiddleCenter, TextBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), ImagePath = @"C:\Users\Admin\Downloads\1.png", ImageBox = new Rectangle(0, 0, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) }
-            };
-            //f.Save();
-            //new Flashcard() { Filename = "empty.fler", hidden = new Flashcard.Face(), visible = new Flashcard.Face() }.Save();
-            f = new Flashcard()
-            {
-                Filename = "ff.fler",
-                Tags = new string[] { "first" },
-                Hidden = new Flashcard.Face() { Text = "first card", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImageBox = new Rectangle(-250, -250, 750, 750), TextAlign = ContentAlignment.MiddleCenter },
-                Visible = new Flashcard.Face() { Text = "you did it!", BackColor = Color.DarkMagenta, TextColor = Color.Magenta, Font = new Font("LaBuff_IMP3_Typeface", 48, FontStyle.Bold | FontStyle.Underline | FontStyle.Strikeout), TextBox = new Rectangle(0, 0, 480, 320), ImagePath = @"C:\Users\Admin\Downloads\96LB_BR.png", TextAlign = ContentAlignment.MiddleCenter }
-            };
-            //f.Save("ff.fler");
-            Flashcard.TryLoad("phil.fler", out f);
-            if (sfc_builder.LoadCard(CurrentCard))
-            {
-                Invalidate(sfc_builder.Bounds);
-            }
-            controls.Add(sfc_builder);
             sfc_builder.OnClick += UpdateBuilderControls;
-            UpdateBuilderControls(null, null);
-
-            Building = true;
+            dfc_reviewer.OnClick += ShowReviewControls;
         }
         /// TEST CODE
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DrawCard();
-        }
 
-        readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 100, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
+        readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 12, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
+        readonly DynamicFlashcardControl dfc_reviewer = new DynamicFlashcardControl() { Bounds = Rectangle.Round(new RectangleF(200 - (DynamicFlashcardControl.IMGWIDTH - StaticFlashcardControl.WIDTH) / 2, 12, DynamicFlashcardControl.IMGWIDTH, DynamicFlashcardControl.IMGHEIGHT)) };
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //label2.Text = "" + (1 + int.Parse(label2.Text));
-            //if (sfc_builder.Tick())
-            //{
-            //    Invalidate(sfc_builder.Bounds);
-            //}
+            if (dfc_reviewer.Tick())
+            {
+                Invalidate(dfc_reviewer.Bounds);
+            }
         }
 
-
-        private void BuildNewCard()
+        /// <summary>
+        /// Begins building a new card
+        /// </summary>
+        private void BuildNewCard(object sender, EventArgs e)
         {
+            if(!Building)
+            {
+                controls.Add(sfc_builder);
+            }
+            Building = true;
+            button2.Visible = button3.Visible = false;
+            button1.Visible = pnl_builder.Visible = true;
             CurrentCard = Flashcard.Default;
-            sfc_builder.LoadCard(CurrentCard);
+            if(sfc_builder.LoadCard(CurrentCard))
+            {
+                Invalidate(sfc_builder.Bounds);
+            }
             UpdateBuilderControls(null, null);
-            Invalidate();
         }
 
         private void UpdateBuilderControls(object sender, EventArgs e)
@@ -507,11 +478,6 @@ namespace FLER
             Cursor = hover?.Cursor ?? Cursors.Default;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            BuildNewCard();
-        }
-
         private void FLERForm_MouseLeave(object sender, EventArgs e)
         {
             if (hover?.MouseLeave(e) == true)
@@ -544,6 +510,9 @@ namespace FLER
                 if (!File.Exists(Path.Combine(CARD_DIR, CurrentCard.Filename)) || MessageBox.Show("A card with this filename already exists! Do you want to overwrite it?", "Warning!", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
                     CurrentCard.Save();
+                    CurrentCard.PurgeImageCache();
+                    Cards[CurrentCard.Filename] = CurrentCard;
+                    button1_Click(null, null);
                 }
             }
         }
@@ -558,6 +527,48 @@ namespace FLER
         private void ValidateFilenameKeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '-' && e.KeyChar != '_' && !char.IsControl(e.KeyChar);
+        }
+
+        /// <summary>
+        /// Draws a flashcard from the pool and reviews it
+        /// </summary>
+        private void DrawCard(object sender, EventArgs e)
+        {
+            ///note: not final implementation
+            if (Reviewing)
+            {
+                UpdateCard(sender as Button == btn_success);
+            }
+            else
+            {
+                controls.Add(dfc_reviewer);
+            }
+            Reviewing = true;
+            button2.Visible = button3.Visible = btn_fail.Visible = btn_success.Visible = false;
+            button1.Visible = true;
+            NextCard();
+        }
+
+        private void ShowReviewControls(object sender, EventArgs e)
+        {
+            btn_fail.Visible = btn_success.Visible = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button2.Visible = button3.Visible = true;
+            button1.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
+            if(Building)
+            {
+                controls.Remove(sfc_builder);
+                Building = false;
+            }
+            if(Reviewing)
+            {
+                controls.Remove(dfc_reviewer);
+                Reviewing = false;
+            }
+            Invalidate();
         }
 
         #endregion
