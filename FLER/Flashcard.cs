@@ -283,7 +283,7 @@ namespace FLER
         #region Public Instance
 
         /// <summary>
-        /// Saves the flashcard in the app data folder
+        /// Saves the flashcard in the data folder
         /// </summary>
         public void Save()
         {

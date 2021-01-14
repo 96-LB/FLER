@@ -302,7 +302,7 @@ namespace FLER
         /// </summary>
         private void BuildNewCard(object sender, EventArgs e)
         {
-            if(!Building)
+            if (!Building)
             {
                 controls.Add(sfc_builder);
             }
@@ -310,7 +310,7 @@ namespace FLER
             button2.Visible = button3.Visible = false;
             button1.Visible = pnl_builder.Visible = true;
             CurrentCard = Flashcard.Default;
-            if(sfc_builder.LoadCard(CurrentCard))
+            if (sfc_builder.LoadCard(CurrentCard))
             {
                 Invalidate(sfc_builder.Bounds);
             }
@@ -519,14 +519,15 @@ namespace FLER
 
         private void ValidateFilename(object sender, EventArgs e)
         {
-            int a = txt_filename.SelectionStart - txt_filename.Text.Length;
-            txt_filename.Text = Regex.Replace(txt_filename.Text, "[^a-zA-Z0-9-_]", "");
-            txt_filename.SelectionStart = a + txt_filename.Text.Length;
+            int a = txt_filename.SelectionStart;
+            txt_filename.Text = Regex.Replace(txt_filename.Text, "\\s", "-");
+            txt_filename.Text = Regex.Replace(txt_filename.Text, "[^a-zA-Z0-9-_]", "_");
+            txt_filename.SelectionStart = a;
         }
 
         private void ValidateFilenameKeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '-' && e.KeyChar != '_' && !char.IsControl(e.KeyChar);
+            e.Handled = !char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '-' && e.KeyChar != '_' && e.KeyChar != ' ' && !char.IsControl(e.KeyChar);
         }
 
         /// <summary>
@@ -558,12 +559,12 @@ namespace FLER
         {
             button2.Visible = button3.Visible = true;
             button1.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
-            if(Building)
+            if (Building)
             {
                 controls.Remove(sfc_builder);
                 Building = false;
             }
-            if(Reviewing)
+            if (Reviewing)
             {
                 controls.Remove(dfc_reviewer);
                 Reviewing = false;
