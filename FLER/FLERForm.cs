@@ -203,7 +203,7 @@ namespace FLER
             if (_colorDialog.ShowDialog() == DialogResult.OK)
             {
                 ((Panel)sender).BackColor = _colorDialog.Color;
-                
+
                 //updates the flashcard
                 BeginUpdateBuilder(null, null);
             }
@@ -534,8 +534,18 @@ namespace FLER
 
         private void btn_save_Click(object sender, EventArgs e)
         {
-            CurrentCard.Filename = $"{txt_filename.Text}.fler";
-            CurrentCard.Save();
+            if (txt_filename.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("You must supply a filename!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                CurrentCard.Filename = $"{txt_filename.Text}.fler";
+                if (!File.Exists(Path.Combine(CARD_DIR, CurrentCard.Filename)) || MessageBox.Show("A card with this filename already exists! Do you want to overwrite it?", "Warning!", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    CurrentCard.Save();
+                }
+            }
         }
 
         private void ValidateFilename(object sender, EventArgs e)
