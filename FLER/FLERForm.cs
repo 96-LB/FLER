@@ -175,7 +175,7 @@ namespace FLER
             else
             {
                 //end reviewing mode if there are no more cards
-                button1_Click(null, null);
+                GoBack(null, null);
             }
         }
 
@@ -199,19 +199,19 @@ namespace FLER
         #region Dialogs
 
         /// <summary>
-        /// Opens a dialog to choose a color
+        /// [Event] Opens a dialog to choose a color
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">An object that contains no event data</param>
         private void PickColor(object sender, EventArgs e)
         {
             //sets the dialog color to match the panel that was clicked
-            _colorDialog.Color = ((Panel)sender).BackColor;
+            _colorDialog.Color = ((Control)sender).BackColor;
 
             //if the user clicked ok, set the control's color
             if (_colorDialog.ShowDialog() == DialogResult.OK)
             {
-                ((Panel)sender).BackColor = _colorDialog.Color;
+                ((Control)sender).BackColor = _colorDialog.Color;
 
                 //updates the flashcard
                 BeginUpdateBuilder(null, null);
@@ -219,7 +219,7 @@ namespace FLER
         }
 
         /// <summary>
-        /// Opens a dialog to choose an image file
+        /// [Event] Opens a dialog to choose an image file
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">An object that contains no event data</param>
@@ -244,14 +244,12 @@ namespace FLER
         }
 
         /// <summary>
-        /// Opens a dialog to choose a font
+        /// [Event] Opens a dialog to choose a font
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">An object that contains no event data</param>
         private void PickFont(object sender, EventArgs e)
         {
-            Label label = sender as Label; //the label which fired this event
-
             //if the user clicked ok, set the label's font
             if (_fontDialog.ShowDialog() == DialogResult.OK)
             {
@@ -300,8 +298,8 @@ namespace FLER
                 FLERControls.Add(sfc_builder);
             }
             Building = true;
-            button2.Visible = button3.Visible = false;
-            button1.Visible = pnl_builder.Visible = true;
+            btn_build.Visible = btn_draw.Visible = false;
+            btn_back.Visible = pnl_builder.Visible = true;
             CurrentCard = Flashcard.Default;
             if (sfc_builder.LoadCard(CurrentCard))
             {
@@ -505,7 +503,7 @@ namespace FLER
                     CurrentCard.Save();
                     CurrentCard.PurgeImageCache();
                     Cards[CurrentCard.Filename] = CurrentCard;
-                    button1_Click(null, null);
+                    GoBack(null, null);
                 }
             }
         }
@@ -538,20 +536,21 @@ namespace FLER
                 FLERControls.Add(dfc_reviewer);
             }
             Reviewing = true;
-            button2.Visible = button3.Visible = btn_fail.Visible = btn_success.Visible = false;
-            button1.Visible = true;
+            btn_build.Visible = btn_draw.Visible = btn_fail.Visible = btn_success.Visible = false;
+            btn_back.Visible = true;
             NextCard();
         }
+
 
         private void ShowReviewControls(object sender, EventArgs e)
         {
             btn_fail.Visible = btn_success.Visible = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void GoBack(object sender, EventArgs e)
         {
-            button2.Visible = button3.Visible = true;
-            button1.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
+            btn_build.Visible = btn_draw.Visible = true;
+            btn_back.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
             if (Building)
             {
                 FLERControls.Remove(sfc_builder);

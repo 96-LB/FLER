@@ -40,7 +40,7 @@
             System.Windows.Forms.Label lbl_txt_width;
             System.Windows.Forms.Label lbl_filename;
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button2 = new System.Windows.Forms.Button();
+            this.btn_build = new System.Windows.Forms.Button();
             this.txt_tags = new System.Windows.Forms.TextBox();
             this.radio_ml = new System.Windows.Forms.RadioButton();
             this.radio_tl = new System.Windows.Forms.RadioButton();
@@ -72,8 +72,8 @@
             this.tim_builder = new System.Windows.Forms.Timer(this.components);
             this.btn_success = new System.Windows.Forms.Button();
             this.btn_fail = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_draw = new System.Windows.Forms.Button();
+            this.btn_back = new System.Windows.Forms.Button();
             lbl_tags = new System.Windows.Forms.Label();
             lbl_img_left = new System.Windows.Forms.Label();
             lbl_img_top = new System.Windows.Forms.Label();
@@ -193,15 +193,15 @@
             this.timer1.Interval = 1;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // button2
+            // btn_build
             // 
-            this.button2.Location = new System.Drawing.Point(12, 42);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(93, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "button2 (edit)";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.BuildNewCard);
+            this.btn_build.Location = new System.Drawing.Point(12, 42);
+            this.btn_build.Name = "btn_build";
+            this.btn_build.Size = new System.Drawing.Size(93, 23);
+            this.btn_build.TabIndex = 2;
+            this.btn_build.Text = "button2 (build)";
+            this.btn_build.UseVisualStyleBackColor = true;
+            this.btn_build.Click += new System.EventHandler(this.BuildNewCard);
             // 
             // txt_tags
             // 
@@ -622,38 +622,38 @@
             this.btn_fail.Visible = false;
             this.btn_fail.Click += new System.EventHandler(this.DrawCard);
             // 
-            // button3
+            // btn_draw
             // 
-            this.button3.Location = new System.Drawing.Point(12, 12);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(93, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "button3 (draw)";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.DrawCard);
+            this.btn_draw.Location = new System.Drawing.Point(12, 12);
+            this.btn_draw.Name = "btn_draw";
+            this.btn_draw.Size = new System.Drawing.Size(93, 23);
+            this.btn_draw.TabIndex = 8;
+            this.btn_draw.Text = "button3 (draw)";
+            this.btn_draw.UseVisualStyleBackColor = true;
+            this.btn_draw.Click += new System.EventHandler(this.DrawCard);
             // 
-            // button1
+            // btn_back
             // 
-            this.button1.Location = new System.Drawing.Point(12, 343);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "button1 (back)";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn_back.Location = new System.Drawing.Point(12, 343);
+            this.btn_back.Name = "btn_back";
+            this.btn_back.Size = new System.Drawing.Size(93, 23);
+            this.btn_back.TabIndex = 9;
+            this.btn_back.Text = "button1 (back)";
+            this.btn_back.UseVisualStyleBackColor = true;
+            this.btn_back.Visible = false;
+            this.btn_back.Click += new System.EventHandler(this.GoBack);
             // 
             // FLERForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(976, 378);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btn_back);
+            this.Controls.Add(this.btn_draw);
             this.Controls.Add(this.btn_fail);
             this.Controls.Add(this.btn_success);
             this.Controls.Add(this.pnl_builder);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btn_build);
             this.Name = "FLERForm";
             this.Text = "Form1";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FLERForm_Paint);
@@ -679,7 +679,7 @@
 
         #endregion
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btn_build;
         private System.Windows.Forms.TextBox txt_tags;
         private System.Windows.Forms.RadioButton radio_ml;
         private System.Windows.Forms.RadioButton radio_tl;
@@ -711,8 +711,8 @@
         private System.Windows.Forms.Button btn_save;
         private System.Windows.Forms.Button btn_success;
         private System.Windows.Forms.Button btn_fail;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_draw;
+        private System.Windows.Forms.Button btn_back;
     }
 }
 
