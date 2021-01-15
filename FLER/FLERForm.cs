@@ -22,6 +22,28 @@ namespace FLER
         #region Fields
 
         /// <summary>
+        /// A pseudorandom number generator
+        /// </summary>
+        private readonly Random _rand = new Random();
+
+        /// <summary>
+        /// A dialog with which to choose a color
+        /// </summary>
+        private readonly ColorDialog _colorDialog = new ColorDialog() { SolidColorOnly = true, FullOpen = true };
+
+        /// <summary>
+        /// A dialog with which to choose an image file
+        /// </summary>
+        private readonly OpenFileDialog _fileDialog = new OpenFileDialog() { Filter = $"Image files ({IMG_EXT.ToLower().Replace(";", ", ")})|{IMG_EXT}" };
+
+        /// <summary>
+        /// A dialog with which to choose a font
+        /// </summary>
+        private readonly FontDialog _fontDialog = new FontDialog() { AllowScriptChange = false };
+
+        #region Fake Constants
+
+        /// <summary>
         /// The flashcard directory location
         /// </summary>
         public static readonly string CARD_DIR = Path.Combine(Application.UserAppDataPath, "CARD");
@@ -32,9 +54,11 @@ namespace FLER
         public static readonly string IMG_DIR = Path.Combine(CARD_DIR, "IMG");
 
         /// <summary>
-        /// A pseudorandom number generator
+        /// A string representing the list of valid image file extensions
         /// </summary>
-        private readonly Random RAND = new Random();
+        public static readonly string IMG_EXT = string.Join(";", ImageCodecInfo.GetImageEncoders().Select(x => x.FilenameExtension));
+
+        #endregion
 
         #endregion
 
@@ -138,7 +162,7 @@ namespace FLER
             ///note: not final implementation
             ///TEST CODE: CHANGE TimeSpan.FromSeconds TO TimeSpan.FromDays ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
             //chooses a random flashcard in the list whose last-reviewed time is at least 2^level days ago
-            CurrentCard = Cards.Values.OrderBy(x => RAND.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
+            CurrentCard = Cards.Values.OrderBy(x => _rand.Next()).FirstOrDefault(x => DateTime.UtcNow - x.Date >= TimeSpan.FromSeconds(Math.Pow(2, x.Level)));
 
             //load the sprites of the selected flashcard
             if (CurrentCard != null)
@@ -172,12 +196,7 @@ namespace FLER
 
         #region Events
 
-        #region PickColor
-
-        /// <summary>
-        /// A dialog with which to choose a color
-        /// </summary>
-        static private readonly ColorDialog _colorDialog = new ColorDialog() { SolidColorOnly = true, FullOpen = true };
+        #region Dialogs
 
         /// <summary>
         /// Opens a dialog to choose a color
@@ -198,23 +217,6 @@ namespace FLER
                 BeginUpdateBuilder(null, null);
             }
         }
-
-        #endregion
-
-        #region PickImage
-
-        /// <summary>
-        /// A string representing the list of valid image file extensions
-        /// </summary>
-        static private readonly string _extension = string.Join(";", ImageCodecInfo.GetImageEncoders().Select(x => x.FilenameExtension));
-
-        /// <summary>
-        /// A dialog with which to choose an image file
-        /// </summary>
-        static private readonly OpenFileDialog _fileDialog = new OpenFileDialog()
-        {
-            Filter = $"Image files ({_extension.ToLower().Replace(";", ", ")})|{_extension}"
-        };
 
         /// <summary>
         /// Opens a dialog to choose an image file
@@ -240,15 +242,6 @@ namespace FLER
                 }
             }
         }
-
-        #endregion
-
-        #region PickFont
-
-        /// <summary>
-        /// A dialog with which to choose a font
-        /// </summary>
-        static private readonly FontDialog _fontDialog = new FontDialog() { AllowScriptChange = false };
 
         /// <summary>
         /// Opens a dialog to choose a font
@@ -304,7 +297,7 @@ namespace FLER
         {
             if (!Building)
             {
-                controls.Add(sfc_builder);
+                FLERControls.Add(sfc_builder);
             }
             Building = true;
             button2.Visible = button3.Visible = false;
@@ -391,14 +384,14 @@ namespace FLER
             Invalidate(sfc_builder.Bounds);
         }
 
-        List<FLERControl> controls = new List<FLERControl>();
+        readonly List<FLERControl> FLERControls = new List<FLERControl>();
         FLERControl hover;
         FLERControl selected;
         private void FLERForm_Paint(object sender, PaintEventArgs e)
         {
             DoubleBuffered = true;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            foreach (FLERControl control in controls)
+            foreach (FLERControl control in FLERControls)
             {
                 if (control.Bounds.IntersectsWith(e.ClipRectangle))
                 {
@@ -444,7 +437,7 @@ namespace FLER
             {
                 if (selected == null)
                 {
-                    foreach (FLERControl control in controls)
+                    foreach (FLERControl control in FLERControls)
                     {
                         if (control.Bounds.Contains(pointer))
                         {
@@ -542,7 +535,7 @@ namespace FLER
             }
             else
             {
-                controls.Add(dfc_reviewer);
+                FLERControls.Add(dfc_reviewer);
             }
             Reviewing = true;
             button2.Visible = button3.Visible = btn_fail.Visible = btn_success.Visible = false;
@@ -561,12 +554,12 @@ namespace FLER
             button1.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
             if (Building)
             {
-                controls.Remove(sfc_builder);
+                FLERControls.Remove(sfc_builder);
                 Building = false;
             }
             if (Reviewing)
             {
-                controls.Remove(dfc_reviewer);
+                FLERControls.Remove(dfc_reviewer);
                 Reviewing = false;
             }
             Invalidate();

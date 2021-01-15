@@ -309,6 +309,32 @@ namespace FLER
         }
 
         /// <summary>
+        /// Deletes the flashcard's data file and image cache
+        /// </summary>
+        public void Delete()
+        {
+            string json = JsonConvert.SerializeObject(this); //serializes the flashcard in json format
+            string path = Path.Combine(FLERForm.CARD_DIR, Filename); //navigates to the the card directory
+
+            //create a new file...
+            using (FileStream file = File.Open(path, FileMode.Create, FileAccess.ReadWrite))
+            {
+                using GZipStream deflate = new GZipStream(file, CompressionMode.Compress); //a gzip compression stream
+                using StreamWriter sw = new StreamWriter(deflate, Encoding.UTF8); //a text reader
+
+                //write the json as a string
+                sw.Write(json);
+            }
+
+            //reopen the file to update its length property
+            using (FileStream file = File.Open(path, FileMode.Open, FileAccess.ReadWrite))
+            {
+                //append the checksum
+                file.Write(Checksum(file), 0, 12);
+            }
+        }
+
+        /// <summary>
         /// Deletes the preloaded images for the flashcard
         /// </summary>
         public void PurgeImageCache()
