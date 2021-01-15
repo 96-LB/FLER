@@ -53,6 +53,11 @@ namespace FLER
         public int Width { get => _bounds.Width; set => _bounds.Width = value; }
 
         /// <summary>
+        /// Whether the control should be drawn
+        /// </summary>
+        public bool Visible { get; set; } = true;
+
+        /// <summary>
         /// The cursor to be displayed when the mouse pointer is over the control
         /// </summary>
         public Cursor Cursor { get; protected set; } = Cursors.Default;

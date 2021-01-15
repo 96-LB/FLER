@@ -304,7 +304,7 @@ namespace FLER
             {
                 //otherwise, render the images and load them straight from memory
                 _visible = RenderFace(card.Visible);
-                _hidden= RenderFace(card.Hidden);
+                _hidden = RenderFace(card.Hidden);
             }
 
             return true; //returns true to repaint the control
@@ -333,12 +333,16 @@ namespace FLER
             //call base method to trigger events
             base.Paint(e);
 
-            using Region clip = e.Graphics.Clip; //the clip region of the graphics
+            //don't attempt to paint if there is nothing to paint
+            if (ToPaint != null)
+            {
+                using Region clip = e.Graphics.Clip; //the clip region of the graphics
 
-            //sets the clip to the bounds, draws the currently selected sprite, and resets the clip
-            e.Graphics.IntersectClip(Bounds);
-            e.Graphics.DrawImage(ToPaint, Bounds);
-            e.Graphics.Clip = clip;
+                //sets the clip to the bounds, draws the currently selected sprite, and resets the clip
+                e.Graphics.IntersectClip(Bounds);
+                e.Graphics.DrawImage(ToPaint, Bounds);
+                e.Graphics.Clip = clip;
+            }
         }
 
         //inherited docstring

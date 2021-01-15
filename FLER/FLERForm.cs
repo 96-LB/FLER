@@ -75,12 +75,12 @@ namespace FLER
         private Flashcard CurrentCard { get; set; } = Flashcard.Default;
 
         /// <summary>
-        /// Whether the program is in building mode
+        /// Whether the program is in build mode
         /// </summary>
         private bool Building { get; set; } = false;
 
         /// <summary>
-        /// Whether the program is in reviewing mode
+        /// Whether the program is in review mode
         /// </summary>
         private bool Reviewing { get; set; } = false;
 
@@ -174,7 +174,7 @@ namespace FLER
             }
             else
             {
-                //end reviewing mode if there are no more cards
+                //end review mode if there are no more cards
                 GoBack(null, null);
             }
         }
@@ -273,12 +273,14 @@ namespace FLER
         {
             sfc_builder.OnClick += UpdateBuilderControls;
             dfc_reviewer.OnClick += ShowReviewControls;
+            FLERControls.Add(sfc_builder);
+            FLERControls.Add(dfc_reviewer);
         }
         /// TEST CODE
 
 
-        readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 12, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT) };
-        readonly DynamicFlashcardControl dfc_reviewer = new DynamicFlashcardControl() { Bounds = Rectangle.Round(new RectangleF(200 - (DynamicFlashcardControl.IMGWIDTH - StaticFlashcardControl.WIDTH) / 2, 12, DynamicFlashcardControl.IMGWIDTH, DynamicFlashcardControl.IMGHEIGHT)) };
+        readonly StaticFlashcardControl sfc_builder = new StaticFlashcardControl() { Bounds = new Rectangle(200, 12, StaticFlashcardControl.WIDTH, StaticFlashcardControl.HEIGHT), Visible = false };
+        readonly DynamicFlashcardControl dfc_reviewer = new DynamicFlashcardControl() { Bounds = Rectangle.Round(new RectangleF(200 - (DynamicFlashcardControl.IMGWIDTH - StaticFlashcardControl.WIDTH) / 2, 12, DynamicFlashcardControl.IMGWIDTH, DynamicFlashcardControl.IMGHEIGHT)), Visible = false };
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -289,17 +291,17 @@ namespace FLER
         }
 
         /// <summary>
-        /// Begins building a new card
+        /// [Event] Enables build mode and begins building a new card
         /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
         private void BuildNewCard(object sender, EventArgs e)
         {
-            if (!Building)
-            {
-                FLERControls.Add(sfc_builder);
-            }
-            Building = true;
+            //shows and hides the appopriate controls for build mode
+            Building = btn_back.Visible = pnl_builder.Visible = sfc_builder.Visible = true;
             btn_build.Visible = btn_draw.Visible = false;
-            btn_back.Visible = pnl_builder.Visible = true;
+
+            //loads a default card into the builder
             CurrentCard = Flashcard.Default;
             if (sfc_builder.LoadCard(CurrentCard))
             {
@@ -391,7 +393,7 @@ namespace FLER
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             foreach (FLERControl control in FLERControls)
             {
-                if (control.Bounds.IntersectsWith(e.ClipRectangle))
+                if (control.Visible && control.Bounds.IntersectsWith(e.ClipRectangle))
                 {
                     control.Paint(e);
                 }
@@ -402,7 +404,7 @@ namespace FLER
 
         private void FLERForm_MouseDown(object sender, MouseEventArgs e)
         {
-            if (hover?.MouseDown(e) == true)
+            if (hover?.Visible == true && hover?.MouseDown(e) == true)
             {
                 Invalidate(hover.Bounds);
             }
@@ -411,11 +413,11 @@ namespace FLER
 
         private void FLERForm_MouseUp(object sender, MouseEventArgs e)
         {
-            if (hover?.MouseUp(e) == true)
+            if (hover?.Visible == true && hover?.MouseUp(e) == true)
             {
                 Invalidate(hover.Bounds);
             }
-            if (selected == hover && selected?.Click(e) == true)
+            if (hover?.Visible == true && selected == hover && selected?.Click(e) == true)
             {
                 Invalidate(selected.Bounds);
             }
@@ -424,7 +426,7 @@ namespace FLER
 
         private void FLERForm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (hover?.MouseMove(e) == true)
+            if (hover?.Visible == true && hover?.MouseMove(e) == true)
             {
                 Invalidate(hover.Bounds);
             }
@@ -437,7 +439,7 @@ namespace FLER
                 {
                     foreach (FLERControl control in FLERControls)
                     {
-                        if (control.Bounds.Contains(pointer))
+                        if (control.Visible && control.Bounds.Contains(pointer))
                         {
                             next = control;
                             break;
@@ -446,7 +448,7 @@ namespace FLER
                 }
                 else
                 {
-                    if (selected.Bounds.Contains(pointer))
+                    if (selected.Visible && selected.Bounds.Contains(pointer))
                     {
                         next = selected;
                     }
@@ -455,7 +457,7 @@ namespace FLER
 
             if (next != hover)
             {
-                if (hover?.MouseLeave(e) == true)
+                if (hover?.Visible == true && hover?.MouseLeave(e) == true)
                 {
                     Invalidate(hover.Bounds);
                 }
@@ -471,7 +473,7 @@ namespace FLER
 
         private void FLERForm_MouseLeave(object sender, EventArgs e)
         {
-            if (hover?.MouseLeave(e) == true)
+            if (hover?.Visible == true && hover?.MouseLeave(e) == true)
             {
                 Invalidate(hover.Bounds);
             }
@@ -522,22 +524,24 @@ namespace FLER
         }
 
         /// <summary>
-        /// Draws a flashcard from the pool and reviews it
+        /// [Event] Enables review mode and draws a flashcard from the pool
         /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
         private void DrawCard(object sender, EventArgs e)
         {
             ///note: not final implementation
+            //if in review mode, update the current card based on the verdict
             if (Reviewing)
             {
                 UpdateCard(sender as Button == btn_success);
             }
-            else
-            {
-                FLERControls.Add(dfc_reviewer);
-            }
-            Reviewing = true;
+
+            //shows and hides the appropriate controls for review mode
             btn_build.Visible = btn_draw.Visible = btn_fail.Visible = btn_success.Visible = false;
-            btn_back.Visible = true;
+            Reviewing = btn_back.Visible = dfc_reviewer.Visible = true;
+
+            //draw a new card
             NextCard();
         }
 
@@ -547,20 +551,16 @@ namespace FLER
             btn_fail.Visible = btn_success.Visible = true;
         }
 
+        /// <summary>
+        /// [Event] Returns the user to the main screen of the program
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">An object that contains no event data</param>
         private void GoBack(object sender, EventArgs e)
         {
+            //shows and hides the appropriate controls, disabling both modes
             btn_build.Visible = btn_draw.Visible = true;
-            btn_back.Visible = btn_fail.Visible = btn_success.Visible = pnl_builder.Visible = false;
-            if (Building)
-            {
-                FLERControls.Remove(sfc_builder);
-                Building = false;
-            }
-            if (Reviewing)
-            {
-                FLERControls.Remove(dfc_reviewer);
-                Reviewing = false;
-            }
+            Building = Reviewing = btn_back.Visible = pnl_builder.Visible = sfc_builder.Visible = btn_success.Visible = btn_fail.Visible = dfc_reviewer.Visible = false;
             Invalidate();
         }
 

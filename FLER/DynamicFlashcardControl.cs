@@ -39,7 +39,7 @@ namespace FLER
         #endregion
 
         //inherited docstring
-        protected override Image ToPaint { get => Sprites[_counter]; }
+        protected override Image ToPaint { get => 0 <= _counter && _counter < Sprites?.Count ? Sprites[_counter] : null; }
 
         #endregion
 
